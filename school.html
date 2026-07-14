@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School — Kam'rn's Enigmas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #0d0b10;
+    --charcoal: #17141a;
+    --panel: #1e1a22;
+    --burgundy: #5c2a3a;
+    --burgundy-bright: #8a3f54;
+    --eggplant: #3d2a45;
+    --dusty-blue: #5c7285;
+    --gold: #b89b6c;
+    --gold-bright: #d4b483;
+    --lilac: #b9a4c9;
+    --bone: #e8e2d8;
+    --bone-dim: #a89e93;
+    --line: rgba(184,155,108,0.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--void);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(92,42,58,0.35), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(61,42,69,0.3), transparent);
+    color: var(--bone);
+    font-family: 'Jost', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 60px;
+  }
+  .container { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+  .back-link {
+    display: inline-block; margin: 24px 0 0; font-family: 'Cinzel', serif;
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold); text-decoration: none; opacity: 0.8;
+  }
+  header { text-align: center; padding: 20px 20px 24px; }
+  h1.sigil {
+    font-family: 'Cinzel', serif; font-size: clamp(26px, 7vw, 38px); font-weight: 600;
+    letter-spacing: 2px; margin: 10px 0 6px;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold) 60%, var(--burgundy-bright));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .subtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: var(--lilac); }
+  .divider {
+    width: 120px; height: 1px; margin: 20px auto 0;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent); position: relative;
+  }
+  .divider::before {
+    content: "✦"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    background: var(--void); padding: 0 10px; color: var(--gold); font-size: 12px;
+  }
+
+  .tab-bar {
+    display: flex; justify-content: center; gap: 4px; margin: 32px 0 30px;
+    flex-wrap: wrap; border-bottom: 1px solid var(--line);
+  }
+  .tab-btn {
+    background: none; border: none; color: var(--bone-dim); font-family: 'Cinzel', serif;
+    font-size: 11px; letter-spacing: 1.3px; text-transform: uppercase;
+    padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent;
+  }
+  .tab-btn.active { color: var(--gold-bright); border-bottom-color: var(--gold); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .section-label {
+    font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--gold); text-align: center; margin: 44px 0 6px;
+  }
+  .section-label:first-of-type { margin-top: 0; }
+  .section-sub {
+    text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic;
+    color: var(--bone-dim); font-size: 14px; margin-bottom: 22px;
+  }
+
+  /* ---------- add forms ---------- */
+  .add-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .add-row input, .add-row select {
+    background: var(--charcoal); border: 1px solid var(--line); color: var(--bone);
+    padding: 9px 10px; font-family: 'Jost', sans-serif; font-size: 13px; border-radius: 2px; flex: 1; min-width: 100px;
+  }
+  .add-row button {
+    background: none; border: 1px solid var(--gold); color: var(--gold-bright);
+    padding: 9px 16px; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px; cursor: pointer; white-space: nowrap;
+  }
+  .add-row button:hover { background: rgba(184,155,108,0.1); }
+
+  /* ---------- schedule ---------- */
+  .schedule-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 10px; }
+  .day-col { border: 1px solid var(--line); background: var(--panel); min-height: 80px; padding: 6px 4px; }
+  .day-head {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--gold); text-align: center; margin-bottom: 6px;
+  }
+  .day-item {
+    font-family: 'Cormorant Garamond', serif; font-size: 11px; color: var(--bone);
+    background: rgba(184,155,108,0.08); border-left: 2px solid var(--gold);
+    padding: 3px 4px; margin-bottom: 4px; line-height: 1.25;
+  }
+  @media (max-width: 640px) {
+    .schedule-grid { grid-template-columns: repeat(7, minmax(60px, 1fr)); overflow-x: auto; }
+  }
+
+  /* ---------- list cards ---------- */
+  .list-card {
+    border: 1px solid var(--line); background: linear-gradient(160deg, var(--panel), var(--charcoal));
+    padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+  }
+  .list-card.done { opacity: 0.45; }
+  .list-card.done .list-title { text-decoration: line-through; }
+  .list-main { flex: 1; }
+  .list-title { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--bone); font-weight: 600; }
+  .list-meta { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); margin-top: 4px; }
+  .list-actions { display: flex; gap: 8px; }
+  .list-actions button {
+    background: none; border: 1px solid var(--line); color: var(--bone-dim);
+    width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .list-actions button:hover { border-color: var(--gold); color: var(--gold-bright); }
+  .empty-state {
+    text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic;
+    color: var(--bone-dim); padding: 20px; font-size: 14px;
+  }
+  .badge-urgent { color: var(--burgundy-bright) !important; }
+  .badge-soon { color: var(--gold-bright) !important; }
+  .badge-later { color: var(--dusty-blue) !important; }
+
+  /* ---------- graduation tracker ---------- */
+  .grad-hero {
+    border: 1px solid var(--gold);
+    background: linear-gradient(160deg, rgba(184,155,108,0.08), rgba(184,155,108,0.02));
+    padding: 26px 22px; text-align: center; margin-bottom: 20px;
+  }
+  .grad-degree { font-family: 'Cinzel', serif; font-size: 16px; letter-spacing: 1px; color: var(--gold-bright); }
+  .grad-school { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: var(--lilac); margin-top: 2px; }
+
+  .grad-progress-ring-wrap { display: flex; justify-content: center; margin: 22px 0; }
+  .grad-progress-text {
+    position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .grad-pct { font-family: 'Cinzel', serif; font-size: 32px; color: var(--gold-bright); font-weight: 600; }
+  .grad-pct-label { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12px; color: var(--bone-dim); }
+
+  .grad-bar-track { height: 14px; background: rgba(255,255,255,0.06); border-radius: 7px; overflow: hidden; margin: 10px 0; }
+  .grad-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-bright)); border-radius: 7px; transition: width 0.4s ease; }
+
+  .grad-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+  .grad-stat { border-top: 1px solid var(--line); padding-top: 10px; }
+  .grad-stat-label { font-family: 'Cinzel', serif; font-size: 8.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--bone-dim); }
+  .grad-stat-value { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--gold-bright); font-weight: 600; margin-top: 3px; }
+
+  .grad-edit-toggle {
+    display: block; margin: 16px auto 0; background: none; border: 1px solid var(--line); color: var(--bone-dim);
+    font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 8px 16px; cursor: pointer;
+  }
+  .grad-edit-form { display: none; margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--line); }
+  .grad-edit-form.active { display: block; }
+  .grad-edit-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .grad-edit-row label {
+    display: block; font-family: 'Cinzel', serif; font-size: 8.5px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 4px;
+  }
+  .grad-edit-field { flex: 1; min-width: 120px; }
+  .grad-edit-field input {
+    width: 100%; background: var(--charcoal); border: 1px solid var(--line); color: var(--bone);
+    padding: 8px 10px; font-family: 'Jost', sans-serif; font-size: 13px; border-radius: 2px;
+  }
+  .grad-save-btn {
+    background: none; border: 1px solid var(--gold); color: var(--gold-bright);
+    padding: 9px 20px; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px; cursor: pointer; margin-top: 6px;
+  }
+
+  /* term table */
+  .term-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12.5px; }
+  .term-table th {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase;
+    color: var(--gold); text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line);
+  }
+  .term-table td {
+    font-family: 'Cormorant Garamond', serif; color: var(--bone); padding: 6px 8px; border-bottom: 1px dotted var(--line);
+  }
+  .term-good { color: var(--gold-bright); }
+
+  /* ---------- P&C study guide ---------- */
+  .pc-hero {
+    border: 1px solid var(--gold);
+    background: linear-gradient(160deg, rgba(184,155,108,0.08), rgba(184,155,108,0.02));
+    padding: 20px; text-align: center; margin-bottom: 24px;
+  }
+  .pc-hero-title { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 1.5px; color: var(--gold-bright); }
+  .pc-hero-stats {
+    display: flex; justify-content: center; gap: 20px; margin-top: 12px; flex-wrap: wrap;
+    font-family: 'Cormorant Garamond', serif; font-size: 13px; color: var(--lilac);
+  }
+
+  .pc-subtab-bar { display: flex; justify-content: center; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+  .pc-subtab-btn {
+    background: var(--charcoal); border: 1px solid var(--line); color: var(--bone-dim);
+    font-family: 'Cinzel', serif; font-size: 9.5px; letter-spacing: 0.5px; text-transform: uppercase;
+    padding: 7px 11px; cursor: pointer;
+  }
+  .pc-subtab-btn.active { border-color: var(--gold); color: var(--gold-bright); background: rgba(184,155,108,0.1); }
+  .pc-subpanel { display: none; }
+  .pc-subpanel.active { display: block; }
+
+  /* timeline phases */
+  .phase-card {
+    border: 1px solid var(--line); background: linear-gradient(160deg, var(--panel), var(--charcoal));
+    margin-bottom: 12px;
+  }
+  .phase-header {
+    display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; cursor: pointer;
+  }
+  .phase-header-left { display: flex; align-items: center; gap: 10px; }
+  .phase-icon { font-size: 18px; }
+  .phase-name { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 1px; color: var(--gold-bright); }
+  .phase-dates { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12px; color: var(--bone-dim); margin-top: 2px; }
+  .phase-chevron { color: var(--gold); transition: transform 0.25s ease; }
+  .phase-card.collapsed .phase-chevron { transform: rotate(-90deg); }
+  .phase-body { padding: 0 16px 16px; }
+  .phase-card.collapsed .phase-body { display: none; }
+
+  .task-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px dotted var(--line); align-items: flex-start; }
+  .task-item:last-child { border-bottom: none; }
+  .task-check {
+    width: 16px; height: 16px; border: 1px solid var(--gold); flex-shrink: 0; margin-top: 2px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--gold-bright);
+  }
+  .task-content { flex: 1; }
+  .task-day { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--lilac); }
+  .task-text { font-family: 'Cormorant Garamond', serif; font-size: 13.5px; color: var(--bone); line-height: 1.5; margin-top: 2px; }
+  .task-text.done-text { text-decoration: line-through; color: var(--bone-dim); }
+  .task-tag {
+    font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 8px;
+    margin-left: 6px; border: 1px solid var(--line); color: var(--bone-dim); white-space: nowrap;
+  }
+
+  /* reference sections (study guide) */
+  .ref-section { border: 1px solid var(--line); background: var(--panel); margin-bottom: 10px; }
+  .ref-header {
+    display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; cursor: pointer;
+  }
+  .ref-title { font-family: 'Cinzel', serif; font-size: 11.5px; letter-spacing: 1px; color: var(--gold-bright); }
+  .ref-chevron { color: var(--gold); transition: transform 0.25s ease; }
+  .ref-section.collapsed .ref-chevron { transform: rotate(-90deg); }
+  .ref-body { padding: 0 16px 16px; }
+  .ref-section.collapsed .ref-body { display: none; }
+
+  .ref-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12.5px; }
+  .ref-table th {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase;
+    color: var(--gold); text-align: left; padding: 6px 6px; border-bottom: 1px solid var(--line);
+  }
+  .ref-table td {
+    font-family: 'Cormorant Garamond', serif; color: var(--bone); padding: 7px 6px; border-bottom: 1px dotted var(--line); line-height: 1.4;
+  }
+  .ref-note {
+    font-family: 'Cormorant Garamond', serif; font-size: 13px; color: var(--bone); line-height: 1.5; margin-top: 8px;
+  }
+  .ref-callout {
+    border-left: 2px solid var(--gold); background: rgba(184,155,108,0.06); padding: 8px 12px; margin-top: 8px;
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12.5px; color: var(--lilac);
+  }
+
+  footer {
+    text-align: center; margin-top: 60px; font-family: 'Cormorant Garamond', serif;
+    font-style: italic; color: var(--bone-dim); font-size: 13px;
+  }
+  footer .mark { color: var(--gold); font-size: 16px; display: block; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a class="back-link" href="index.html">← back to grimoire</a>
+
+  <header>
+    <h1 class="sigil">School</h1>
+    <div class="subtitle">every path you're building, at once</div>
+    <div class="divider"></div>
+  </header>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="wgu">WGU</button>
+    <button class="tab-btn" data-tab="graduation">Graduation Tracker</button>
+    <button class="tab-btn" data-tab="pc">P&C Underwriting</button>
+  </div>
+
+  <!-- WGU TAB -->
+  <div class="tab-panel active" id="tab-wgu">
+    <div class="section-label">Weekly Class Schedule</div>
+    <div class="section-sub">what's on the books this week</div>
+
+    <div class="add-row">
+      <select id="schedDay">
+        <option>Mon</option><option>Tue</option><option>Wed</option><option>Thu</option><option>Fri</option><option>Sat</option><option>Sun</option>
+      </select>
+      <input type="text" id="schedText" placeholder="e.g. Business Communication, 2-3:30pm">
+      <button onclick="addSchedule()">+ Add</button>
+    </div>
+
+    <div class="schedule-grid" id="scheduleGrid"></div>
+
+    <div class="section-label">Assignments & Deadlines</div>
+    <div class="section-sub">what's due, and when</div>
+
+    <div class="add-row">
+      <input type="text" id="assignText" placeholder="Assignment name">
+      <input type="date" id="assignDate">
+      <select id="assignPriority">
+        <option value="urgent">🔴 Urgent</option>
+        <option value="soon">🟡 Soon</option>
+        <option value="later">🟢 Later</option>
+      </select>
+      <button onclick="addAssignment()">+ Add</button>
+    </div>
+
+    <div id="assignmentList"></div>
+
+    <div class="section-label">Study Goals</div>
+    <div class="section-sub">skills to build toward your degree</div>
+
+    <div class="add-row">
+      <input type="text" id="goalText" placeholder="e.g. Finish Business Communication course">
+      <button onclick="addGoal()">+ Add</button>
+    </div>
+
+    <div id="goalList"></div>
+  </div>
+
+  <!-- GRADUATION TRACKER TAB -->
+  <div class="tab-panel" id="tab-graduation">
+    <div class="section-label">Graduation Tracker</div>
+    <div class="section-sub">Bachelor of Science, Business Management — WGU</div>
+
+    <div class="grad-hero">
+      <div class="grad-degree" id="gradDegreeName">Bachelor of Science, Business Management</div>
+      <div class="grad-school" id="gradSchoolName">Western Governors University</div>
+
+      <div class="grad-progress-ring-wrap">
+        <div class="grad-progress-text">
+          <div class="grad-pct" id="gradPct">0%</div>
+          <div class="grad-pct-label">complete</div>
+        </div>
+      </div>
+
+      <div class="grad-bar-track">
+        <div class="grad-bar-fill" id="gradBarFill" style="width:0%"></div>
+      </div>
+
+      <div class="grad-stats">
+        <div class="grad-stat">
+          <div class="grad-stat-label">CUs Earned</div>
+          <div class="grad-stat-value" id="statCUsEarned">—</div>
+        </div>
+        <div class="grad-stat">
+          <div class="grad-stat-label">CUs Remaining</div>
+          <div class="grad-stat-value" id="statCUsRemaining">—</div>
+        </div>
+        <div class="grad-stat">
+          <div class="grad-stat-label">Goal Date</div>
+          <div class="grad-stat-value" id="statGoalDate">—</div>
+        </div>
+      </div>
+
+      <button class="grad-edit-toggle" onclick="toggleGradEdit()">✎ Edit My Progress</button>
+
+      <div class="grad-edit-form" id="gradEditForm">
+        <div class="grad-edit-row">
+          <div class="grad-edit-field">
+            <label>CUs Earned</label>
+            <input type="number" id="editCUsEarned" placeholder="31">
+          </div>
+          <div class="grad-edit-field">
+            <label>Total CUs Required</label>
+            <input type="number" id="editCUsTotal" placeholder="110">
+          </div>
+        </div>
+        <div class="grad-edit-row">
+          <div class="grad-edit-field">
+            <label>Enrollment Date</label>
+            <input type="date" id="editEnrollDate">
+          </div>
+          <div class="grad-edit-field">
+            <label>Graduation Goal Date</label>
+            <input type="date" id="editGoalDate">
+          </div>
+        </div>
+        <div class="grad-edit-row">
+          <div class="grad-edit-field">
+            <label>Degree Name</label>
+            <input type="text" id="editDegreeName" placeholder="Bachelor of Science, Business Management">
+          </div>
+        </div>
+        <button class="grad-save-btn" onclick="saveGradInfo()">Save Progress</button>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:40px;">Term Plan</div>
+    <div class="section-sub">your enrolled path to graduation</div>
+
+    <table class="term-table">
+      <tr><th>Term</th><th>Dates</th><th>CUs</th><th>Status</th></tr>
+      <tr><td>TCU (Transfer)</td><td>—</td><td>31</td><td class="term-good">● Complete</td></tr>
+      <tr><td>Term 1 (Current)</td><td>Jun 2026 – Nov 2026</td><td>12</td><td class="term-good">● Good</td></tr>
+      <tr><td>Term 2</td><td>Dec 2026 – May 2027</td><td>12</td><td class="term-good">● Good</td></tr>
+      <tr><td>Term 3</td><td>Jun 2027 – Nov 2027</td><td>12</td><td class="term-good">● Good</td></tr>
+      <tr><td>Term 4</td><td>Dec 2027 – May 2028</td><td>12</td><td class="term-good">● Good</td></tr>
+      <tr><td>Term 5</td><td>Jun 2028 – Nov 2028</td><td>12</td><td class="term-good">● Good</td></tr>
+      <tr><td>Term 6</td><td>Dec 2028 – May 2029</td><td>12</td><td class="term-good">● Good</td></tr>
+      <tr><td>Term 7</td><td>Jun 2029</td><td>7</td><td class="term-good">● Good</td></tr>
+    </table>
+  </div>
+
+  <!-- P&C UNDERWRITING TAB -->
+  <div class="tab-panel" id="tab-pc">
+    <div class="pc-hero">
+      <div class="pc-hero-title">New York Property & Casualty License</div>
+      <div class="pc-hero-stats">
+        <span>150 Questions</span>
+        <span>2.5 Hours</span>
+        <span>70% to Pass</span>
+        <span>Target: Oct 29, 2026</span>
+      </div>
+    </div>
+
+    <div class="pc-subtab-bar">
+      <button class="pc-subtab-btn active" data-pcsub="timeline">Study Timeline</button>
+      <button class="pc-subtab-btn" data-pcsub="guide">Study Guide</button>
+      <button class="pc-subtab-btn" data-pcsub="career">Career Strategy</button>
+    </div>
+
+    <!-- TIMELINE SUBTAB -->
+    <div class="pc-subpanel active" id="pcsub-timeline">
+      <div class="section-sub">tap a phase to expand, check off tasks as you go</div>
+      <div id="phasesContainer"></div>
+    </div>
+
+    <!-- STUDY GUIDE SUBTAB -->
+    <div class="pc-subpanel" id="pcsub-guide">
+      <div class="section-sub">tap a section to expand — your full exam reference</div>
+      <div id="refContainer"></div>
+    </div>
+
+    <!-- CAREER SUBTAB -->
+    <div class="pc-subpanel" id="pcsub-career">
+      <div class="section-sub">where this license actually takes you</div>
+
+      <div class="ref-section" id="companiesSection">
+        <div class="ref-header" onclick="toggleRef('companiesSection')">
+          <div class="ref-title">NYC Companies to Apply To</div>
+          <div class="ref-chevron">▾</div>
+        </div>
+        <div class="ref-body">
+          <table class="ref-table">
+            <tr><th>Company</th><th>Why & How</th></tr>
+            <tr><td><b>GNY Insurance</b></td><td>TOP PRIORITY. NYC-based. Formal Underwriter Trainee Program. $54,600–$95,500 starting. gny.com/careers</td></tr>
+            <tr><td>Travelers</td><td>Major carrier, strong training, personal lines division. careers.travelers.com</td></tr>
+            <tr><td>Chubb</td><td>High-net-worth personal lines, luxury NYC properties. More competitive entry.</td></tr>
+            <tr><td>Liberty Mutual</td><td>Large carrier, good training, NYC offices.</td></tr>
+            <tr><td>AIG</td><td>NYC headquartered. Complex property and specialty risks.</td></tr>
+            <tr><td>Kemah Capital</td><td>NYC specialty carrier, commercial property focus incl. real estate.</td></tr>
+            <tr><td>Brown & Brown</td><td>Large brokerage, personal lines underwriting, multiple NY locations.</td></tr>
+            <tr><td>Markel Corporation</td><td>Northeast Underwriting Trainee Program. Specialty insurer.</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="ref-section" id="realEstateSection">
+        <div class="ref-header" onclick="toggleRef('realEstateSection')">
+          <div class="ref-title">Your Real Estate Investment Connection</div>
+          <div class="ref-chevron">▾</div>
+        </div>
+        <div class="ref-body">
+          <div class="ref-note">Property underwriting knowledge teaches you to see risk the way smart investors do — construction quality, location hazards, prior losses, flood zones, building age.</div>
+          <div class="ref-note">NYC's complex insurance needs (co-ops, condos, brownstones, mixed-use) make understanding insurance both a career asset and an investing edge.</div>
+          <div class="ref-callout">After 3–5 years, Chubb, PCS, and Misch Group specialize in insuring luxury NYC real estate — this is where underwriting and real estate investing overlap most.</div>
+        </div>
+      </div>
+
+      <div class="ref-section" id="standoutSection">
+        <div class="ref-header" onclick="toggleRef('standoutSection')">
+          <div class="ref-title">How to Stand Out When Applying</div>
+          <div class="ref-chevron">▾</div>
+        </div>
+        <div class="ref-body">
+          <div class="ref-note">• Get your P&C license BEFORE applying — it immediately separates you from unlicensed candidates</div>
+          <div class="ref-note">• Mention your real estate investment interest in interviews — shows you understand property risk intuitively</div>
+          <div class="ref-note">• Reference GNY's trainee program specifically — shows you did your homework</div>
+          <div class="ref-note">• Study the CPCU designation path — mentioning it shows long-term commitment</div>
+          <div class="ref-note">• Connect with underwriters on LinkedIn at target companies before applying</div>
+        </div>
+      </div>
+
+      <div class="ref-section" id="postLicenseSection">
+        <div class="ref-header" onclick="toggleRef('postLicenseSection')">
+          <div class="ref-title">90-Day Post-License Action Plan</div>
+          <div class="ref-chevron">▾</div>
+        </div>
+        <div class="ref-body">
+          <table class="ref-table">
+            <tr><th>Timeline</th><th>Action</th></tr>
+            <tr><td>Week 1–2</td><td>Update LinkedIn with new license. Apply to GNY trainee program and Travelers immediately. Connect with 5 underwriters.</td></tr>
+            <tr><td>Week 3–4</td><td>Apply to Liberty Mutual, AIG, Brown & Brown. Research each company's NYC presence.</td></tr>
+            <tr><td>Month 2</td><td>Start studying for the Associate in Insurance (AU) designation — GNY requires this within 6 months of hire.</td></tr>
+            <tr><td>Month 3</td><td>Network at NYC insurance industry events. CPCU Society has a NYC chapter.</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="mark">✦</span>
+    every credit, every gate — building toward exactly where you're going
+  </footer>
+</div>
+
+<script>
+  const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+  function load(key, fallback) {
+    try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+    catch(e) { return fallback; }
+  }
+  function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+  // ---------- tabs ----------
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  const pcSubBtns = document.querySelectorAll('.pc-subtab-btn');
+  const pcSubPanels = document.querySelectorAll('.pc-subpanel');
+  pcSubBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      pcSubBtns.forEach(b => b.classList.remove('active'));
+      pcSubPanels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('pcsub-' + btn.dataset.pcsub).classList.add('active');
+    });
+  });
+
+  // ================= WGU SCHEDULE / ASSIGNMENTS / GOALS =================
+  let schedule = load('kamrn_school_schedule', {});
+  let assignments = load('kamrn_school_assignments', []);
+  let goals = load('kamrn_school_goals', []);
+
+  function renderSchedule() {
+    const grid = document.getElementById('scheduleGrid');
+    grid.innerHTML = '';
+    DAYS.forEach(day => {
+      const col = document.createElement('div');
+      col.className = 'day-col';
+      const head = document.createElement('div');
+      head.className = 'day-head';
+      head.textContent = day;
+      col.appendChild(head);
+      (schedule[day] || []).forEach((item, idx) => {
+        const el = document.createElement('div');
+        el.className = 'day-item';
+        el.textContent = item;
+        el.style.cursor = 'pointer';
+        el.title = 'Click to remove';
+        el.onclick = () => {
+          schedule[day].splice(idx, 1);
+          save('kamrn_school_schedule', schedule);
+          renderSchedule();
+        };
+        col.appendChild(el);
+      });
+      grid.appendChild(col);
+    });
+  }
+
+  function addSchedule() {
+    const day = document.getElementById('schedDay').value;
+    const text = document.getElementById('schedText').value.trim();
+    if (!text) return;
+    if (!schedule[day]) schedule[day] = [];
+    schedule[day].push(text);
+    save('kamrn_school_schedule', schedule);
+    document.getElementById('schedText').value = '';
+    renderSchedule();
+  }
+
+  function renderAssignments() {
+    const container = document.getElementById('assignmentList');
+    container.innerHTML = '';
+    if (assignments.length === 0) {
+      container.innerHTML = '<div class="empty-state">no assignments tracked yet</div>';
+      return;
+    }
+    const sorted = [...assignments].sort((a,b) => {
+      if (a.done !== b.done) return a.done ? 1 : -1;
+      return new Date(a.date || '2999-01-01') - new Date(b.date || '2999-01-01');
+    });
+    const badgeClass = { urgent: 'badge-urgent', soon: 'badge-soon', later: 'badge-later' };
+    const badgeIcon = { urgent: '🔴', soon: '🟡', later: '🟢' };
+    sorted.forEach(a => {
+      const card = document.createElement('div');
+      card.className = 'list-card' + (a.done ? ' done' : '');
+      const dateStr = a.date ? new Date(a.date + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric' }) : 'no date';
+      card.innerHTML = `
+        <div class="list-main">
+          <div class="list-title">${a.text}</div>
+          <div class="list-meta ${badgeClass[a.priority]}">${badgeIcon[a.priority]} due ${dateStr}</div>
+        </div>
+        <div class="list-actions">
+          <button data-action="done">✓</button>
+          <button data-action="del">×</button>
+        </div>
+      `;
+      card.querySelector('[data-action="done"]').onclick = () => {
+        a.done = !a.done;
+        save('kamrn_school_assignments', assignments);
+        renderAssignments();
+      };
+      card.querySelector('[data-action="del"]').onclick = () => {
+        assignments = assignments.filter(x => x.id !== a.id);
+        save('kamrn_school_assignments', assignments);
+        renderAssignments();
+      };
+      container.appendChild(card);
+    });
+  }
+
+  function addAssignment() {
+    const text = document.getElementById('assignText').value.trim();
+    const date = document.getElementById('assignDate').value;
+    const priority = document.getElementById('assignPriority').value;
+    if (!text) return;
+    assignments.push({ id: Date.now(), text, date, priority, done: false });
+    save('kamrn_school_assignments', assignments);
+    document.getElementById('assignText').value = '';
+    document.getElementById('assignDate').value = '';
+    renderAssignments();
+  }
+
+  function renderGoals() {
+    const container = document.getElementById('goalList');
+    container.innerHTML = '';
+    if (goals.length === 0) {
+      container.innerHTML = '<div class="empty-state">no study goals yet</div>';
+      return;
+    }
+    goals.forEach(g => {
+      const card = document.createElement('div');
+      card.className = 'list-card' + (g.done ? ' done' : '');
+      card.innerHTML = `
+        <div class="list-main"><div class="list-title">${g.text}</div></div>
+        <div class="list-actions">
+          <button data-action="done">✓</button>
+          <button data-action="del">×</button>
+        </div>
+      `;
+      card.querySelector('[data-action="done"]').onclick = () => {
+        g.done = !g.done;
+        save('kamrn_school_goals', goals);
+        renderGoals();
+      };
+      card.querySelector('[data-action="del"]').onclick = () => {
+        goals = goals.filter(x => x.id !== g.id);
+        save('kamrn_school_goals', goals);
+        renderGoals();
+      };
+      container.appendChild(card);
+    });
+  }
+
+  function addGoal() {
+    const text = document.getElementById('goalText').value.trim();
+    if (!text) return;
+    goals.push({ id: Date.now(), text, done: false });
+    save('kamrn_school_goals', goals);
+    document.getElementById('goalText').value = '';
+    renderGoals();
+  }
+
+  renderSchedule();
+  renderAssignments();
+  renderGoals();
+
+  // ================= GRADUATION TRACKER =================
+  const DEFAULT_GRAD_INFO = {
+    degreeName: 'Bachelor of Science, Business Management',
+    schoolName: 'Western Governors University',
+    cusEarned: 31,
+    cusTotal: 110,
+    enrollDate: '2026-06-08',
+    goalDate: '2027-05-31'
+  };
+
+  function getGradInfo() {
+    return load('kamrn_grad_info', DEFAULT_GRAD_INFO);
+  }
+
+  function renderGradTracker() {
+    const info = getGradInfo();
+    const pct = Math.round((info.cusEarned / info.cusTotal) * 100);
+
+    document.getElementById('gradDegreeName').textContent = info.degreeName;
+    document.getElementById('gradSchoolName').textContent = info.schoolName;
+    document.getElementById('gradPct').textContent = pct + '%';
+    document.getElementById('gradBarFill').style.width = pct + '%';
+    document.getElementById('statCUsEarned').textContent = info.cusEarned;
+    document.getElementById('statCUsRemaining').textContent = info.cusTotal - info.cusEarned;
+
+    const goalDate = new Date(info.goalDate + 'T00:00:00');
+    document.getElementById('statGoalDate').textContent = goalDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+    // pre-fill edit form
+    document.getElementById('editCUsEarned').value = info.cusEarned;
+    document.getElementById('editCUsTotal').value = info.cusTotal;
+    document.getElementById('editEnrollDate').value = info.enrollDate;
+    document.getElementById('editGoalDate').value = info.goalDate;
+    document.getElementById('editDegreeName').value = info.degreeName;
+  }
+
+  function toggleGradEdit() {
+    document.getElementById('gradEditForm').classList.toggle('active');
+  }
+
+  function saveGradInfo() {
+    const info = {
+      degreeName: document.getElementById('editDegreeName').value.trim() || DEFAULT_GRAD_INFO.degreeName,
+      schoolName: DEFAULT_GRAD_INFO.schoolName,
+      cusEarned: parseFloat(document.getElementById('editCUsEarned').value) || 0,
+      cusTotal: parseFloat(document.getElementById('editCUsTotal').value) || 110,
+      enrollDate: document.getElementById('editEnrollDate').value || DEFAULT_GRAD_INFO.enrollDate,
+      goalDate: document.getElementById('editGoalDate').value || DEFAULT_GRAD_INFO.goalDate
+    };
+    save('kamrn_grad_info', info);
+    renderGradTracker();
+    document.getElementById('gradEditForm').classList.remove('active');
+  }
+
+  renderGradTracker();
+
+  // ================= P&C STUDY TIMELINE =================
+  const PHASES = [
+    {
+      id: 'enroll', phase: 'Phase 0', label: 'Enroll & Set Up', dates: 'Jul 21 – Jul 25', icon: '📋',
+      tasks: [
+        { day: 'Mon Jul 21', task: 'Enroll in Kaplan NY P&C pre-licensing course at kaplanfinancial.com/insurance/new-york (~$125). Use StateRequirement.com for 10% off code.', tag: 'ACTION' },
+        { day: 'Mon Jul 21', task: 'Create free account at open-exam-prep.com/practice/ny-property-casualty — your free supplement for practice questions.', tag: 'ACTION' },
+        { day: 'Mon Jul 21', task: 'Create PSI account at psiexams.com — you\'ll register for the actual exam here later.', tag: 'ACTION' },
+        { day: 'Tue Jul 22', task: 'Set a daily 1-hour study block in your calendar. Protect it like a work shift.', tag: 'TIP' },
+        { day: 'Wed Jul 23', task: 'Read the NY DFS licensing page at dfs.ny.gov so you understand the full process end-to-end.', tag: 'ACTION' },
+        { day: 'Fri Jul 25', task: 'Complete Kaplan Module 1 orientation and read the course overview.', tag: 'STUDY' }
+      ]
+    },
+    {
+      id: 'module1', phase: 'Phase 1', label: 'Insurance Basics & Regulation', dates: 'Jul 28 – Aug 8', icon: '📖',
+      tasks: [
+        { day: 'Week of Jul 28', task: 'Study: What is insurance, types of risk (pure vs speculative), insurable risk requirements, law of large numbers, adverse selection.', tag: 'STUDY' },
+        { day: 'Week of Jul 28', task: 'Study: Key principles — indemnity, insurable interest, subrogation, contribution, proximate cause.', tag: 'STUDY' },
+        { day: 'Week of Aug 4', task: 'Study: Insurance contracts — 4 elements of a valid contract, policy structure.', tag: 'STUDY' },
+        { day: 'Week of Aug 4', task: 'Study: NY DFS regulation — admitted vs non-admitted carriers, agents vs brokers, surplus lines, NYPIUA.', tag: 'STUDY' },
+        { day: 'Fri Aug 7', task: 'Take your first Kaplan module quiz. Score below 70%? Reread that section before moving on.', tag: 'MILESTONE' },
+        { day: 'Sat Aug 8', task: 'Flashcard drill: Key terms from Section 1 of your study guide. 20 minutes of active recall.', tag: 'STUDY' }
+      ]
+    },
+    {
+      id: 'module2', phase: 'Phase 2', label: 'Property Insurance', dates: 'Aug 10 – Aug 28', icon: '🏠',
+      tasks: [
+        { day: 'Week of Aug 10', task: 'Study: Property basics — named vs open peril, vacancy vs unoccupancy, loss valuation (ACV vs Replacement Cost). MEMORIZE the ACV formula.', tag: 'STUDY' },
+        { day: 'Week of Aug 10', task: 'Study: Coinsurance clause and the payment formula. Practice 3–5 coinsurance math problems.', tag: 'STUDY' },
+        { day: 'Week of Aug 17', task: 'Study: Dwelling Policy forms DP-1, DP-2, DP-3 — who uses each, what\'s covered.', tag: 'STUDY' },
+        { day: 'Week of Aug 17', task: 'Study: Homeowners forms HO-1 through HO-8. Focus on HO-3, HO-4 (renters), HO-6 (condo) — all extremely relevant to NYC.', tag: 'STUDY' },
+        { day: 'Week of Aug 24', task: 'Study: HO coverage sections A–F. Know dollar amounts and percentages.', tag: 'STUDY' },
+        { day: 'Week of Aug 24', task: 'Study: Key property terms — mortgage clause, deductible, appraisal clause, salvage, pro-rata vs short-rate cancellation.', tag: 'STUDY' },
+        { day: 'Fri Aug 28', task: 'Take a full practice test on property topics only. Aim for 75%+. Write down every wrong answer.', tag: 'MILESTONE' }
+      ]
+    },
+    {
+      id: 'module3', phase: 'Phase 3', label: 'Auto Insurance & NY No-Fault', dates: 'Aug 31 – Sep 12', icon: '🚗',
+      tasks: [
+        { day: 'Week of Aug 31', task: 'Study: Personal Auto Policy (PAP) — Parts A through D.', tag: 'STUDY' },
+        { day: 'Week of Aug 31', task: 'MEMORIZE: NY minimum auto limits = 25/50/10 + $50,000 PIP.', tag: 'STUDY' },
+        { day: 'Week of Sep 7', task: 'Study: NY No-Fault law (Article 51). PIP covers $50,000/person. 80% lost wages up to $2,000/month for 3 years.', tag: 'STUDY' },
+        { day: 'Week of Sep 7', task: 'Study: SUM coverage — NY-specific, must be offered, covers the gap when at-fault driver\'s limits are too low.', tag: 'STUDY' },
+        { day: 'Fri Sep 11', task: 'Take a quiz on auto and NY no-fault topics. If below 70%, re-drill Article 51 over the weekend.', tag: 'MILESTONE' },
+        { day: 'Sat Sep 12', task: 'Review all auto underwriting risk factors. Start thinking like an underwriter, not just a test-taker.', tag: 'TIP' }
+      ]
+    },
+    {
+      id: 'module4', phase: 'Phase 4', label: 'Casualty, Commercial & NY Laws', dates: 'Sep 14 – Oct 2', icon: '⚖️',
+      tasks: [
+        { day: 'Week of Sep 14', task: 'Study: Casualty & liability basics — tort, negligence (4 elements), strict liability, occurrence vs claims-made.', tag: 'STUDY' },
+        { day: 'Week of Sep 14', task: 'Study: Umbrella policy — coverage, underlying policy requirements, why high-net-worth NYC clients need it.', tag: 'STUDY' },
+        { day: 'Week of Sep 21', task: 'Study: Workers\' compensation — no-fault employer coverage, NY State Insurance Fund.', tag: 'STUDY' },
+        { day: 'Week of Sep 21', task: 'Study: Commercial lines — CPP vs BOP. Know which businesses qualify for a BOP.', tag: 'STUDY' },
+        { day: 'Week of Sep 28', task: 'Study: NY-specific laws — NYPIUA, NYAIP, NY P/C Security Fund ($1M/claim), Regulation 64 timelines.', tag: 'STUDY' },
+        { day: 'Week of Sep 28', task: 'MEMORIZE Regulation 64: Acknowledge claim = 15 business days. Investigation = 30 days. Accept/deny = 15 business days after.', tag: 'STUDY' },
+        { day: 'Thu Oct 1', task: 'Study: NFIP flood insurance — standard policies don\'t cover flood, limits $250K building/$100K contents, 30-day wait.', tag: 'STUDY' },
+        { day: 'Fri Oct 2', task: 'Take a full section quiz on casualty and NY law topics. Be honest about your score.', tag: 'MILESTONE' }
+      ]
+    },
+    {
+      id: 'review', phase: 'Phase 5', label: 'Full Review & Practice Exams', dates: 'Oct 5 – Oct 23', icon: '🔁',
+      tasks: [
+        { day: 'Week of Oct 5', task: 'Take your FIRST full 150-question practice exam under timed conditions (2.5 hours).', tag: 'MILESTONE' },
+        { day: 'Week of Oct 5', task: 'Review every wrong answer from Practice Exam 1. Understand WHY it\'s right.', tag: 'STUDY' },
+        { day: 'Week of Oct 12', task: 'Take your SECOND full practice exam. Need 75%+ consistently to feel confident.', tag: 'MILESTONE' },
+        { day: 'Week of Oct 12', task: 'Drill the Key Numbers table: 25/50/10, $50K PIP, 90 hrs, 15 business days, $1M Security Fund, 30-day NFIP wait.', tag: 'STUDY' },
+        { day: 'Week of Oct 19', task: 'Take your THIRD full practice exam. If scoring 75%+ consistently → schedule PSI exam for week of Oct 27.', tag: 'MILESTONE' },
+        { day: 'Week of Oct 19', task: 'If still below 75% → add 30 extra minutes daily. Do NOT schedule until consistently at 75%.', tag: 'TIP' },
+        { day: 'Thu Oct 22', task: 'Schedule your PSI exam at psiexams.com for the week of Oct 27–31.', tag: 'ACTION' },
+        { day: 'Fri Oct 23', task: 'Light review day only. Key Numbers sheet and Regulation 64 timelines. No new material.', tag: 'STUDY' }
+      ]
+    },
+    {
+      id: 'exam', phase: 'Phase 6', label: 'Exam Week', dates: 'Oct 27 – Oct 31', icon: '🎯',
+      tasks: [
+        { day: 'Mon Oct 27', task: 'Light review only — 30 minutes max. No cramming.', tag: 'TIP' },
+        { day: 'Tue Oct 28', task: 'Rest day. Cramming the night before hurts more than it helps.', tag: 'TIP' },
+        { day: 'Wed Oct 29 (TARGET)', task: 'EXAM DAY 🎯 Bring 2 forms of government-issued photo ID. Arrive 30 min early. Need 105/150 correct (70%).', tag: 'MILESTONE' },
+        { day: 'Thu Oct 30', task: 'IF PASSED: Apply for your license immediately at dfs.ny.gov Secure Portal. Pay the $80 fee.', tag: 'ACTION' },
+        { day: 'Thu Oct 30', task: 'IF NOT PASSED: Wait 24 hours to reschedule. Use diagnostic report to identify weak sections.', tag: 'ACTION' }
+      ]
+    },
+    {
+      id: 'retake', phase: 'Retake Path', label: 'If You Need to Retake', dates: 'Nov 1 – Nov 21 (if needed)', icon: '🔄',
+      tasks: [
+        { day: 'Nov 1–2', task: 'Get your diagnostic report from PSI. Circle the 2–3 weakest sections.', tag: 'ACTION' },
+        { day: 'Nov 3–14', task: '2 weeks of targeted re-study on ONLY your weak sections.', tag: 'STUDY' },
+        { day: 'Nov 15–18', task: 'Take 2 more full practice exams. Should be scoring 78%+ before rescheduling.', tag: 'MILESTONE' },
+        { day: 'Nov 19', task: 'Schedule retake for week of Nov 23. Additional PSI exam fee applies (~$33).', tag: 'ACTION' },
+        { day: 'Week of Nov 24', task: 'RETAKE EXAM. Most candidates who fail once pass on their second attempt.', tag: 'MILESTONE' },
+        { day: 'After passing', task: 'Apply for license at dfs.ny.gov immediately.', tag: 'ACTION' }
+      ]
+    },
+    {
+      id: 'licensed', phase: 'Phase 7', label: 'Licensed → Start Applying', dates: 'Nov (attempt 1) or Dec (attempt 2)', icon: '✅',
+      tasks: [
+        { day: 'Day 1', task: 'Update LinkedIn: Add "NY Licensed Property & Casualty Insurance Producer."', tag: 'ACTION' },
+        { day: 'Day 1–3', task: 'Apply to GNY Insurance Underwriter Trainee Program at gny.com/careers — TOP priority.', tag: 'ACTION' },
+        { day: 'Day 1–5', task: 'Apply to Travelers Insurance underwriting roles. Also apply to Liberty Mutual.', tag: 'ACTION' },
+        { day: 'Week 2', task: 'Apply to AIG, Brown & Brown, and Markel Corporation. Tailor each cover letter to mention NYC property market interest.', tag: 'ACTION' },
+        { day: 'Week 2–3', task: 'Connect with 5–10 underwriters at target companies on LinkedIn.', tag: 'ACTION' },
+        { day: 'Week 3–4', task: 'Start studying for the Associate in Insurance (AU) designation. GNY requires this within 6 months of hire.', tag: 'TIP' },
+        { day: 'Target', task: 'First interviews: 2–4 weeks after applying. With a fresh license, you\'re a strong entry-level candidate.', tag: 'MILESTONE' },
+        { day: 'Target start date', task: 'Starting your first underwriting job by January 2027 (or Feb–March 2027 if retake needed). Either way — earning $55K–$86K+ within 6 months.', tag: 'MILESTONE' }
+      ]
+    }
+  ];
+
+  function taskKey(phaseId, idx) {
+    return `kamrn_pc_task_${phaseId}_${idx}`;
+  }
+
+  function renderPhases() {
+    const container = document.getElementById('phasesContainer');
+    container.innerHTML = '';
+
+    PHASES.forEach(phase => {
+      const collapsedKey = `kamrn_pc_phase_collapsed_${phase.id}`;
+      const collapsed = load(collapsedKey, phase.id !== 'enroll'); // first phase open by default
+
+      const card = document.createElement('div');
+      card.className = 'phase-card' + (collapsed ? ' collapsed' : '');
+
+      const doneCount = phase.tasks.filter((t, i) => load(taskKey(phase.id, i), false)).length;
+
+      card.innerHTML = `
+        <div class="phase-header">
+          <div class="phase-header-left">
+            <div class="phase-icon">${phase.icon}</div>
+            <div>
+              <div class="phase-name">${phase.phase} — ${phase.label}</div>
+              <div class="phase-dates">${phase.dates} · ${doneCount}/${phase.tasks.length} done</div>
+            </div>
+          </div>
+          <div class="phase-chevron">▾</div>
+        </div>
+        <div class="phase-body"></div>
+      `;
+
+      card.querySelector('.phase-header').addEventListener('click', () => {
+        card.classList.toggle('collapsed');
+        save(collapsedKey, card.classList.contains('collapsed'));
+      });
+
+      const body = card.querySelector('.phase-body');
+      phase.tasks.forEach((t, i) => {
+        const done = load(taskKey(phase.id, i), false);
+        const item = document.createElement('div');
+        item.className = 'task-item';
+        item.innerHTML = `
+          <div class="task-check">${done ? '✓' : ''}</div>
+          <div class="task-content">
+            <div class="task-day">${t.day} <span class="task-tag">${t.tag}</span></div>
+            <div class="task-text ${done ? 'done-text' : ''}">${t.task}</div>
+          </div>
+        `;
+        item.querySelector('.task-check').addEventListener('click', () => {
+          save(taskKey(phase.id, i), !done);
+          renderPhases();
+        });
+        body.appendChild(item);
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  renderPhases();
+
+  // ================= P&C STUDY GUIDE REFERENCE =================
+  const REF_SECTIONS = [
+    {
+      id: 'basics', title: 'Section 1 — Insurance Basics & Regulation (10–15% of exam)',
+      content: `
+        <table class="ref-table">
+          <tr><th>Term</th><th>Definition</th></tr>
+          <tr><td><b>Risk</b></td><td>The possibility of a financial loss occurring.</td></tr>
+          <tr><td><b>Peril</b></td><td>The direct cause of a loss (fire, theft, flood).</td></tr>
+          <tr><td><b>Hazard</b></td><td>A condition that increases the likelihood or severity of a loss.</td></tr>
+          <tr><td><b>Moral Hazard</b></td><td>Dishonesty or character flaw that increases loss risk (e.g., arson fraud).</td></tr>
+          <tr><td><b>Morale Hazard</b></td><td>Indifference to loss because of insurance coverage.</td></tr>
+          <tr><td><b>Pure Risk</b></td><td>Only two outcomes: loss or no loss. Only pure risk is insurable.</td></tr>
+          <tr><td><b>Speculative Risk</b></td><td>Loss, gain, or no change. NOT insurable (e.g., investing in stocks).</td></tr>
+          <tr><td><b>Law of Large Numbers</b></td><td>The more exposures in a pool, the more predictable the loss rate.</td></tr>
+          <tr><td><b>Adverse Selection</b></td><td>Higher-risk individuals seek insurance more than lower-risk ones.</td></tr>
+          <tr><td><b>Insurable Interest</b></td><td>You must have a financial stake in what you're insuring.</td></tr>
+          <tr><td><b>Indemnity</b></td><td>Insurance restores you to pre-loss position — no more, no less.</td></tr>
+          <tr><td><b>Subrogation</b></td><td>After paying a claim, insurer recovers from the at-fault third party.</td></tr>
+        </table>
+        <div class="ref-callout">🏛 KEY FACT: NY DFS was created in 2011 by merging the Insurance Department and Banking Department.</div>
+        <table class="ref-table" style="margin-top:10px;">
+          <tr><th>Term</th><th>Definition</th></tr>
+          <tr><td><b>Admitted Carrier</b></td><td>Licensed and authorized by DFS to do business in NY.</td></tr>
+          <tr><td><b>Non-Admitted (Surplus Lines)</b></td><td>Not licensed in NY — writes unusual risks admitted carriers won't touch.</td></tr>
+          <tr><td><b>Agent</b></td><td>Represents the insurance COMPANY. Can bind coverage.</td></tr>
+          <tr><td><b>Broker</b></td><td>Represents the CLIENT. Cannot bind without carrier authority.</td></tr>
+          <tr><td><b>MGA</b></td><td>Broad authority — can underwrite, bind, and manage a book of business.</td></tr>
+        </table>
+        <div class="ref-note">💡 Real Estate Connection: NYC has many unique/high-value properties that admitted carriers won't insure — surplus lines markets are critical here.</div>
+      `
+    },
+    {
+      id: 'property', title: 'Section 2 — Property Insurance (20–25% of exam)',
+      content: `
+        <table class="ref-table">
+          <tr><th>Concept</th><th>Explanation</th></tr>
+          <tr><td><b>Named Peril</b></td><td>Only covers perils explicitly listed. Not named = not covered.</td></tr>
+          <tr><td><b>Open Peril</b></td><td>Covers everything EXCEPT what's excluded. "All-risk." Better, pricier.</td></tr>
+          <tr><td><b>Vacant vs Unoccupied</b></td><td>Vacant = no people AND no belongings. Unoccupied = no people, contents remain.</td></tr>
+        </table>
+        <div class="ref-callout">⚠ HIGH-FREQUENCY EXAM TOPIC: ACV = Replacement Cost − Depreciation. If RC = $200,000 and depreciation = $40,000, ACV = $160,000.</div>
+        <table class="ref-table" style="margin-top:10px;">
+          <tr><th>Valuation Method</th><th>How It Works</th></tr>
+          <tr><td><b>Replacement Cost (RC)</b></td><td>Cost to replace with new, like kind & quality — NO depreciation.</td></tr>
+          <tr><td><b>Actual Cash Value (ACV)</b></td><td>Replacement Cost MINUS Depreciation.</td></tr>
+          <tr><td><b>Agreed Value</b></td><td>Insured & insurer agree on value at inception (art, antiques).</td></tr>
+        </table>
+        <div class="ref-note">📐 Coinsurance Formula: Amount Paid = (Amount Carried ÷ Amount Required) × Loss.<br>Example: $500K property, 80% required = $400K needed. Only carry $300K. Loss = $100K.<br>Payment = ($300K ÷ $400K) × $100K = <b>$75,000</b>. You absorb the other $25,000.</div>
+        <table class="ref-table" style="margin-top:10px;">
+          <tr><th>Dwelling Form</th><th>Coverage</th></tr>
+          <tr><td>DP-1 (Basic)</td><td>Named peril: fire, lightning, explosion. ACV basis.</td></tr>
+          <tr><td>DP-2 (Broad)</td><td>DP-1 perils plus windstorm, hail, vandalism, theft. RC basis.</td></tr>
+          <tr><td>DP-3 (Special)</td><td>Open peril dwelling, named peril contents. Best. RC basis.</td></tr>
+        </table>
+        <table class="ref-table" style="margin-top:10px;">
+          <tr><th>Homeowners Form</th><th>Who & What</th></tr>
+          <tr><td><b>HO-3 (Special)</b></td><td>MOST COMMON. Open peril dwelling, named peril contents.</td></tr>
+          <tr><td><b>HO-4 (Renters)</b></td><td>Personal property only, no dwelling. Very common in NYC.</td></tr>
+          <tr><td><b>HO-5 (Comprehensive)</b></td><td>Open peril on BOTH dwelling and personal property. Best coverage.</td></tr>
+          <tr><td><b>HO-6 (Condo)</b></td><td>Interior + personal property. Building exterior = master policy. Very common in NYC.</td></tr>
+        </table>
+        <table class="ref-table" style="margin-top:10px;">
+          <tr><th>Coverage</th><th>What It Pays</th></tr>
+          <tr><td>Coverage A (Dwelling)</td><td>Main structure, usually at replacement cost.</td></tr>
+          <tr><td>Coverage B (Other Structures)</td><td>Detached garage/shed. ~10% of Coverage A.</td></tr>
+          <tr><td>Coverage C (Personal Property)</td><td>~50% of Coverage A. Sublimits for jewelry/art/electronics.</td></tr>
+          <tr><td>Coverage D (Loss of Use)</td><td>~20-30% of Coverage A. Extra living expenses.</td></tr>
+          <tr><td>Coverage E (Liability)</td><td>Standard limit $100,000.</td></tr>
+          <tr><td>Coverage F (Med Pay)</td><td>$1,000–$5,000. No lawsuit required.</td></tr>
+        </table>
+      `
+    },
+    {
+      id: 'auto', title: 'Section 3 — Auto Insurance & NY No-Fault',
+      content: `
+        <div class="ref-callout">⚠ MUST KNOW: NY minimum auto limits = <b>25/50/10 + $50,000 PIP</b>. Memorize this exactly.</div>
+        <table class="ref-table">
+          <tr><th>Coverage Part</th><th>What It Pays</th></tr>
+          <tr><td>Part A — Liability</td><td>Pays if YOU are at fault. Bodily injury (BI) + property damage (PD).</td></tr>
+          <tr><td>Part B — Medical Payments</td><td>Pays medical for you/passengers regardless of fault.</td></tr>
+          <tr><td>Part C — Uninsured Motorist</td><td>Pays your damages if at-fault driver has no insurance.</td></tr>
+          <tr><td>Part D — Damage to Your Auto</td><td>Collision + Comprehensive (theft, weather, vandalism).</td></tr>
+        </table>
+        <div class="ref-callout">⭐ KEY EXAM TOPIC: NY is a NO-FAULT state (Article 51). Your own insurance pays your medical bills and lost wages regardless of who caused the accident.</div>
+        <table class="ref-table" style="margin-top:10px;">
+          <tr><th>No-Fault Concept</th><th>Details</th></tr>
+          <tr><td>PIP Coverage</td><td>$50,000/person, required on all NY auto policies.</td></tr>
+          <tr><td>What PIP Covers</td><td>Medical, lost wages (80% up to $2,000/month for 3 years).</td></tr>
+          <tr><td>Right to Sue</td><td>Only for pain/suffering if injury meets "serious injury" threshold.</td></tr>
+          <tr><td>SUM Coverage</td><td>NY-specific. Must be offered. Covers gap when at-fault driver's limits too low.</td></tr>
+        </table>
+      `
+    },
+    {
+      id: 'casualty', title: 'Section 4–6 — Casualty, NY Laws & Commercial',
+      content: `
+        <table class="ref-table">
+          <tr><th>Term</th><th>Definition</th></tr>
+          <tr><td>Umbrella Policy</td><td>Extra liability above underlying policies. Key for high-net-worth NYC clients.</td></tr>
+          <tr><td>Workers' Comp</td><td>No-fault employer coverage via NY State Insurance Fund.</td></tr>
+          <tr><td>CPP</td><td>Commercial Package Policy — bundles multiple commercial coverages.</td></tr>
+          <tr><td>BOP</td><td>Businessowners Policy — simplified package for qualifying small businesses.</td></tr>
+        </table>
+        <div class="ref-callout">Regulation 64 (MEMORIZE): Acknowledge claim = 15 business days. Complete investigation = 30 days. Accept/deny = 15 business days after investigation.</div>
+        <table class="ref-table" style="margin-top:10px;">
+          <tr><th>NY-Specific Concept</th><th>Detail</th></tr>
+          <tr><td>NYPIUA</td><td>NY Property Insurance Underwriting Association — insurer of last resort.</td></tr>
+          <tr><td>NY P/C Security Fund</td><td>Max $1,000,000 per claim.</td></tr>
+          <tr><td>NFIP Flood Insurance</td><td>Standard policies don't cover flood. Limits: $250K building / $100K contents. 30-day waiting period.</td></tr>
+        </table>
+      `
+    },
+    {
+      id: 'keynumbers', title: 'Key Numbers to Memorize',
+      content: `
+        <table class="ref-table">
+          <tr><th>What</th><th>Number</th></tr>
+          <tr><td>NY Auto Minimums</td><td><b>25/50/10 + $50,000 PIP</b></td></tr>
+          <tr><td>NY P&C License Exam</td><td>150 questions, 2.5 hours, 70% to pass</td></tr>
+          <tr><td>Pre-Licensing Hours</td><td>90 hours P&C, 40 hours Personal Lines</td></tr>
+          <tr><td>CE Requirement</td><td>15 hours every 2 years</td></tr>
+          <tr><td>Cancellation Notice</td><td>30 days (15 for nonpayment), 45 days non-renewal</td></tr>
+          <tr><td>Claims Acknowledgment</td><td>15 business days (Reg 64)</td></tr>
+          <tr><td>Claims Investigation</td><td>30 days (Reg 64)</td></tr>
+          <tr><td>Security Fund Max</td><td>$1,000,000 per claim</td></tr>
+          <tr><td>NFIP Residential Max</td><td>$250,000 building / $100,000 contents</td></tr>
+          <tr><td>NFIP Waiting Period</td><td>30 days</td></tr>
+          <tr><td>License Term</td><td>2 years, expires on your birthday</td></tr>
+          <tr><td>Total License Cost</td><td>~$268–$318</td></tr>
+        </table>
+      `
+    }
+  ];
+
+  function toggleRef(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('collapsed');
+  }
+
+  function renderRefSections() {
+    const container = document.getElementById('refContainer');
+    container.innerHTML = '';
+
+    REF_SECTIONS.forEach((section, idx) => {
+      const div = document.createElement('div');
+      div.className = 'ref-section' + (idx === 0 ? '' : ' collapsed');
+      div.id = 'ref-' + section.id;
+      div.innerHTML = `
+        <div class="ref-header" onclick="toggleRef('ref-${section.id}')">
+          <div class="ref-title">${section.title}</div>
+          <div class="ref-chevron">▾</div>
+        </div>
+        <div class="ref-body">${section.content}</div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  renderRefSections();
+</script>
+
+</body>
+</html>

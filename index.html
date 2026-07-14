@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kam'rn — Personal Grimoire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #0d0b10;
+    --charcoal: #17141a;
+    --panel: #1e1a22;
+    --burgundy: #5c2a3a;
+    --burgundy-bright: #8a3f54;
+    --eggplant: #3d2a45;
+    --dusty-blue: #5c7285;
+    --gold: #b89b6c;
+    --gold-bright: #d4b483;
+    --lilac: #b9a4c9;
+    --bone: #e8e2d8;
+    --bone-dim: #a89e93;
+    --line: rgba(184,155,108,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--void);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(92,42,58,0.35), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(61,42,69,0.3), transparent);
+    color: var(--bone);
+    font-family: 'Jost', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 60px;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ---------- HEADER ---------- */
+  header {
+    text-align: center;
+    padding: 48px 20px 28px;
+    position: relative;
+  }
+
+  .signature-line {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-top: 14px;
+  }
+
+  h1.sigil {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(20px, 6.2vw, 46px);
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    margin: 14px 0 6px;
+    white-space: nowrap;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold) 60%, var(--burgundy-bright));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--lilac);
+    letter-spacing: 0.5px;
+  }
+
+  .divider {
+    width: 140px;
+    height: 1px;
+    margin: 22px auto 0;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    position: relative;
+  }
+  .divider::before {
+    content: "✦";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--void);
+    padding: 0 10px;
+    color: var(--gold);
+    font-size: 12px;
+  }
+
+  /* ---------- COSMIC BANNER ---------- */
+  .cosmic-banner {
+    margin: 26px 0 44px;
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    color: var(--bone-dim);
+    letter-spacing: 0.3px;
+    line-height: 1.8;
+  }
+  .cosmic-banner .accent {
+    color: var(--gold-bright);
+    font-weight: 600;
+    font-style: normal;
+  }
+  .cosmic-banner .sep {
+    color: var(--gold);
+    margin: 0 10px;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 560px) {
+    .cosmic-banner { font-size: 13px; line-height: 2.1; }
+    .cosmic-banner .sep { display: none; }
+    .cosmic-banner .line-break { display: block; }
+  }
+
+  /* ---------- VISION BOARD ---------- */
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 6px;
+    margin-top: 40px;
+  }
+  .section-label:first-of-type { margin-top: 0; }
+  .section-sub {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--bone-dim);
+    font-size: 14px;
+    margin-bottom: 22px;
+  }
+
+  /* ---------- HD blueprint grid ---------- */
+  .hd-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .hd-card {
+    border: 1px solid var(--line);
+    background: linear-gradient(160deg, var(--panel), var(--charcoal));
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .hd-wide { grid-column: span 2; }
+  .hd-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--bone-dim);
+  }
+  .hd-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: var(--gold-bright);
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .hd-directive {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--lilac);
+    margin-top: 6px;
+    line-height: 1.35;
+  }
+
+  .daily-directive-box {
+    border: 1px solid var(--gold);
+    background: linear-gradient(160deg, rgba(184,155,108,0.08), rgba(184,155,108,0.02));
+    padding: 18px 20px;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .dd-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .dd-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    color: var(--bone);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .dd-text b { color: var(--lilac); }
+
+  .vision-wall {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 48px;
+  }
+
+  .frame {
+    aspect-ratio: 3/4;
+    position: relative;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.35s ease, border-color 0.35s ease;
+  }
+  .frame:nth-child(2), .frame:nth-child(5) { aspect-ratio: 1/1; }
+  .frame:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+  }
+  .frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .frame-empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--bone-dim);
+    background:
+      repeating-linear-gradient(45deg, rgba(184,155,108,0.03) 0 2px, transparent 2px 12px);
+  }
+  .frame-empty .plus {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    color: var(--gold);
+    opacity: 0.6;
+  }
+  .frame-empty span.label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-family: 'Cinzel', serif;
+    opacity: 0.5;
+  }
+  .frame input[type="file"] {
+    display: none;
+  }
+  .frame-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    background: rgba(13,11,16,0.7);
+    border: 1px solid var(--line);
+    color: var(--bone);
+    font-size: 11px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .frame.has-image:hover .frame-remove { display: flex; }
+
+  /* ---------- GRIMOIRE TILES ---------- */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 12px;
+  }
+
+  .tile {
+    position: relative;
+    aspect-ratio: 1/0.95;
+    border: 1px solid var(--line);
+    background: linear-gradient(160deg, var(--panel), var(--charcoal));
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-decoration: none;
+    color: var(--bone);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .tile::before, .tile::after,
+  .tile .tc1, .tile .tc2 {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--gold);
+    opacity: 0.55;
+  }
+  .tile::before { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+  .tile::after { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+  .tile .tc1 { top: 6px; right: 6px; border-left: none; border-bottom: none; }
+  .tile .tc2 { bottom: 6px; left: 6px; border-right: none; border-top: none; }
+
+  .tile:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+
+  .tile-icon {
+    font-size: 26px;
+    filter: grayscale(0.2);
+  }
+
+  .tile-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+    margin-top: 10px;
+  }
+
+  .tile-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--bone-dim);
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  /* accent variations per tile */
+  .tile.burgundy:hover { border-color: var(--burgundy-bright); }
+  .tile.blue:hover { border-color: var(--dusty-blue); }
+  .tile.lilac:hover { border-color: var(--lilac); }
+
+  footer {
+    text-align: center;
+    margin-top: 60px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--bone-dim);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+  footer .mark {
+    color: var(--gold);
+    font-size: 16px;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  /* modal for full photo upload */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: var(--panel);
+    border: 1px solid var(--gold);
+    padding: 24px;
+    max-width: 300px;
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .modal-box button {
+    margin-top: 14px;
+    background: none;
+    border: 1px solid var(--gold);
+    color: var(--gold-bright);
+    padding: 8px 18px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <h1 class="sigil">Welcome to Kam'rn's Enigmas</h1>
+    <div class="subtitle">a living grimoire · body, business & becoming</div>
+    <div class="divider"></div>
+    <div class="signature-line">Gemini Sun · Generator 1/3</div>
+  </header>
+
+  <div class="cosmic-banner" id="cosmicBanner">
+    <span class="accent" id="todayFull">—</span><span class="sep">·</span><span class="line-break"></span><span class="accent" id="moonPhase">—</span><span class="sep">·</span><span class="line-break"></span>Cycle Day <span class="accent" id="cycleDay">—</span>
+  </div>
+
+  <div class="section-label">Your Energy Blueprint</div>
+  <div class="section-sub" id="dailyDirectiveIntro">today's alignment, based on your design</div>
+
+  <div class="hd-grid">
+    <div class="hd-card">
+      <div class="hd-label">Type</div>
+      <div class="hd-value">Generator</div>
+      <div class="hd-directive">🧲 Be magnetic. Let things come to you.</div>
+    </div>
+    <div class="hd-card">
+      <div class="hd-label">Strategy</div>
+      <div class="hd-value">To Respond</div>
+      <div class="hd-directive">🛑 Stop forcing the hustle. React to real cues.</div>
+    </div>
+    <div class="hd-card">
+      <div class="hd-label">Authority</div>
+      <div class="hd-value">Sacral</div>
+      <div class="hd-directive">🔊 Listen for the gut sound — uh-huh or uh-uh.</div>
+    </div>
+    <div class="hd-card">
+      <div class="hd-label">Profile</div>
+      <div class="hd-value">1/3</div>
+      <div class="hd-directive">📊 Research deeply, then test and break things.</div>
+    </div>
+    <div class="hd-card hd-wide">
+      <div class="hd-label">Check-In</div>
+      <div class="hd-value">Frustration = Realign · Satisfaction = Win</div>
+      <div class="hd-directive">🧭 Your energy is your only honest feedback loop.</div>
+    </div>
+  </div>
+
+  <div class="daily-directive-box" id="dailyDirectiveBox">
+    <div class="dd-label">Today's Directive</div>
+    <div class="dd-text" id="dailyDirectiveText">—</div>
+  </div>
+
+  <div class="section-label">The Vision Wall</div>
+  <div class="section-sub">click any frame to place your own image</div>
+
+  <div class="vision-wall" id="visionWall"></div>
+
+  <div class="section-label">The Chapters</div>
+  <div class="section-sub">enter a room of the grimoire</div>
+
+  <div class="tiles">
+
+    <a class="tile lilac" href="goals.html">
+      <span class="tc1"></span><span class="tc2"></span>
+      <div class="tile-icon">🎯</div>
+      <div>
+        <div class="tile-name">Goals</div>
+        <div class="tile-desc">daily · weekly · quarterly · yearly</div>
+      </div>
+    </a>
+
+    <a class="tile blue" href="meals.html">
+      <span class="tc1"></span><span class="tc2"></span>
+      <div class="tile-icon">🍽️</div>
+      <div>
+        <div class="tile-name">Meal Plans</div>
+        <div class="tile-desc">weekly vegan meals & grocery lists</div>
+      </div>
+    </a>
+
+    <a class="tile burgundy" href="hormones.html">
+      <span class="tc1"></span><span class="tc2"></span>
+      <div class="tile-icon">🌸</div>
+      <div>
+        <div class="tile-name">Hormone Balance</div>
+        <div class="tile-desc">cycle tracker, calendar & daily to-dos</div>
+      </div>
+    </a>
+
+    <a class="tile blue" href="calendar.html">
+      <span class="tc1"></span><span class="tc2"></span>
+      <div class="tile-icon">📅</div>
+      <div>
+        <div class="tile-name">Monthly Calendar</div>
+        <div class="tile-desc">cycle-synced schedule</div>
+      </div>
+    </a>
+
+    <a class="tile lilac" href="design.html">
+      <span class="tc1"></span><span class="tc2"></span>
+      <div class="tile-icon">✨</div>
+      <div>
+        <div class="tile-name">Birth Chart & Design</div>
+        <div class="tile-desc">moon phases, human design & astrology</div>
+      </div>
+    </a>
+
+    <a class="tile blue" href="school.html">
+      <span class="tc1"></span><span class="tc2"></span>
+      <div class="tile-icon">📚</div>
+      <div>
+        <div class="tile-name">School</div>
+        <div class="tile-desc">class schedule, deadlines & study goals</div>
+      </div>
+    </a>
+
+    <a class="tile blue" href="trading.html">
+      <span class="tc1"></span><span class="tc2"></span>
+      <div class="tile-icon">📈</div>
+      <div>
+        <div class="tile-name">Trading</div>
+        <div class="tile-desc">market news, risk calc & trade log</div>
+      </div>
+    </a>
+
+    <a class="tile lilac" href="finance.html">
+      <span class="tc1"></span><span class="tc2"></span>
+      <div class="tile-icon">💰</div>
+      <div>
+        <div class="tile-name">Personal Finance</div>
+        <div class="tile-desc">budget, bills, cards & annual recap</div>
+      </div>
+    </a>
+
+    <a class="tile burgundy" href="higherself.html">
+      <span class="tc1"></span><span class="tc2"></span>
+      <div class="tile-icon">🕯️</div>
+      <div>
+        <div class="tile-name">Higher Self</div>
+        <div class="tile-desc">daily briefing prompt & affirmations</div>
+      </div>
+    </a>
+
+  </div>
+
+  <footer>
+    <span class="mark">✦</span>
+    for the one who is building something real
+  </footer>
+
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <p>Image saved to this browser only.<br>Re-uploading on another device will need this step again.</p>
+    <button onclick="document.getElementById('modalOverlay').classList.remove('active')">Understood</button>
+  </div>
+</div>
+
+<script>
+  // ---------- date / cosmic banner ----------
+  const today = new Date();
+  const dateOpts = { weekday: 'long', month: 'long', day: 'numeric' };
+  document.getElementById('todayFull').textContent = today.toLocaleDateString('en-US', dateOpts);
+
+  // simple moon phase calculation
+  function getMoonPhase(date) {
+    const synodic = 29.53058867;
+    const knownNewMoon = new Date('2000-01-06T18:14:00Z');
+    const diff = (date - knownNewMoon) / 86400000;
+    const phase = ((diff % synodic) + synodic) % synodic;
+    const idx = Math.floor((phase / synodic) * 8 + 0.5) % 8;
+    const phases = ['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
+    const icons = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+    return { name: phases[idx], icon: icons[idx] };
+  }
+  const moon = getMoonPhase(today);
+  document.getElementById('moonPhase').textContent = moon.icon + ' ' + moon.name;
+
+  // ---------- cycle day (reads from hormones.html's localStorage) ----------
+  const CYCLE_LENGTH = 31;
+  const STORAGE_KEY = 'kamrn_cycle_start';
+
+  function getCycleStartDate() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return new Date(saved + 'T00:00:00');
+    return null;
+  }
+
+  function getCycleDayNum(startDate) {
+    const t = new Date(new Date().toDateString());
+    const diffDays = Math.floor((t - startDate) / 86400000);
+    return ((diffDays % CYCLE_LENGTH) + CYCLE_LENGTH) % CYCLE_LENGTH + 1;
+  }
+
+  function getPhaseKey(day) {
+    if (day >= 12 && day <= 17) return 'ovulation';
+    if (day >= 1 && day <= 7) return 'period';
+    if (day >= 8 && day <= 11) return 'follicular';
+    return 'luteal';
+  }
+
+  const phaseDirectives = {
+    period: "You're in <b>Period</b> phase — energy is lowest, rest is productive. Pair this with your Sacral Authority: don't force output today, respond only to what truly pulls a gut 'yes.'",
+    follicular: "You're in <b>Follicular</b> phase — rising energy, sharp new ideas. As a 1/3 Profile, this is a great window to research and plan, then start testing small experiments.",
+    ovulation: "You're in <b>Ovulation</b> phase — peak magnetism and voice. Your Throat gates are naturally activated. Film content, pitch, respond to opportunities that show up now.",
+    luteal: "You're in <b>Luteal</b> phase — turning inward. Watch for your Not-Self Theme, Frustration, creeping in. If you feel it, you're forcing — pause and let your gut re-decide."
+  };
+
+  const startDate = getCycleStartDate();
+  let cycleDay = null;
+  let phaseKey = null;
+
+  if (startDate) {
+    cycleDay = getCycleDayNum(startDate);
+    phaseKey = getPhaseKey(cycleDay);
+    document.getElementById('cycleDay').textContent = cycleDay;
+    document.getElementById('dailyDirectiveText').innerHTML = phaseDirectives[phaseKey];
+  } else {
+    document.getElementById('cycleDay').textContent = '—';
+    document.getElementById('dailyDirectiveText').innerHTML = "Set your period start date on the <a href='hormones.html' style='color:var(--gold-bright)'>Hormone Balance</a> page to unlock phase-specific daily directives.";
+  }
+
+  // ---------- vision wall photo slots (in-memory only per session) ----------
+  const wall = document.getElementById('visionWall');
+  const slotCount = 6;
+  const images = {};
+
+  function renderSlot(i) {
+    const frame = document.createElement('div');
+    frame.className = 'frame';
+    frame.id = 'frame-' + i;
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.id = 'file-' + i;
+
+    input.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        images[i] = ev.target.result;
+        renderFrameContent(i);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    frame.appendChild(input);
+    renderFrameContentInto(frame, i);
+    frame.addEventListener('click', (e) => {
+      if (e.target.classList.contains('frame-remove')) return;
+      document.getElementById('file-' + i).click();
+    });
+
+    wall.appendChild(frame);
+  }
+
+  function renderFrameContentInto(frame, i) {
+    frame.classList.remove('has-image');
+    const existing = frame.querySelector('.frame-empty, img, .frame-remove');
+    frame.querySelectorAll('.frame-empty, img, .frame-remove').forEach(el => el.remove());
+
+    if (images[i]) {
+      frame.classList.add('has-image');
+      const img = document.createElement('img');
+      img.src = images[i];
+      frame.appendChild(img);
+      const rm = document.createElement('div');
+      rm.className = 'frame-remove';
+      rm.textContent = '×';
+      rm.addEventListener('click', (e) => {
+        e.stopPropagation();
+        delete images[i];
+        renderFrameContentInto(frame, i);
+      });
+      frame.appendChild(rm);
+    } else {
+      const empty = document.createElement('div');
+      empty.className = 'frame-empty';
+      empty.innerHTML = '<span class="plus">+</span><span class="label">Add Image</span>';
+      frame.appendChild(empty);
+    }
+  }
+
+  function renderFrameContent(i) {
+    const frame = document.getElementById('frame-' + i);
+    renderFrameContentInto(frame, i);
+  }
+
+  for (let i = 0; i < slotCount; i++) renderSlot(i);
+</script>
+
+</body>
+</html>

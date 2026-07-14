@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birth Chart & Design — Kam'rn's Enigmas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #0d0b10;
+    --charcoal: #17141a;
+    --panel: #1e1a22;
+    --burgundy: #5c2a3a;
+    --burgundy-bright: #8a3f54;
+    --eggplant: #3d2a45;
+    --dusty-blue: #5c7285;
+    --gold: #b89b6c;
+    --gold-bright: #d4b483;
+    --lilac: #b9a4c9;
+    --bone: #e8e2d8;
+    --bone-dim: #a89e93;
+    --line: rgba(184,155,108,0.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--void);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(92,42,58,0.35), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(61,42,69,0.3), transparent);
+    color: var(--bone);
+    font-family: 'Jost', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 60px;
+  }
+  .container { max-width: 820px; margin: 0 auto; padding: 0 20px; }
+  .back-link {
+    display: inline-block; margin: 24px 0 0; font-family: 'Cinzel', serif;
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold); text-decoration: none; opacity: 0.8;
+  }
+  header { text-align: center; padding: 20px 20px 28px; }
+  h1.sigil {
+    font-family: 'Cinzel', serif; font-size: clamp(24px, 6.5vw, 38px); font-weight: 600;
+    letter-spacing: 1.5px; margin: 10px 0 6px; white-space: nowrap;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold) 60%, var(--burgundy-bright));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .subtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: var(--lilac); }
+  .divider {
+    width: 120px; height: 1px; margin: 20px auto 0;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent); position: relative;
+  }
+  .divider::before {
+    content: "✦"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    background: var(--void); padding: 0 10px; color: var(--gold); font-size: 12px;
+  }
+  .section-label {
+    font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--gold); text-align: center; margin: 44px 0 6px;
+  }
+  .section-label:first-of-type { margin-top: 0; }
+  .section-sub {
+    text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic;
+    color: var(--bone-dim); font-size: 14px; margin-bottom: 22px;
+  }
+
+  /* ---------- moon + transit hero (top section) ---------- */
+  .cosmic-hero {
+    border: 1px solid var(--gold);
+    background: linear-gradient(160deg, rgba(184,155,108,0.08), rgba(184,155,108,0.02));
+    padding: 26px 22px; margin-bottom: 40px; text-align: center;
+  }
+  .moon-row { display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 16px; }
+  .moon-icon { font-size: 40px; }
+  .moon-info-text { text-align: left; }
+  .moon-phase-name { font-family: 'Cinzel', serif; font-size: 17px; letter-spacing: 1px; color: var(--gold-bright); }
+  .moon-sign { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: var(--lilac); margin-top: 2px; }
+
+  .transit-blurb {
+    font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--bone);
+    line-height: 1.6; max-width: 560px; margin: 0 auto; padding-top: 16px; border-top: 1px dashed var(--line);
+  }
+  .transit-blurb b { color: var(--lilac); }
+  .transit-label {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+
+  /* ---------- two-column chart layout ---------- */
+  .chart-columns {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;
+  }
+  @media (max-width: 640px) {
+    .chart-columns { grid-template-columns: 1fr; }
+  }
+  .chart-col {
+    border: 1px solid var(--line);
+    background: linear-gradient(160deg, var(--panel), var(--charcoal));
+    padding: 20px 18px;
+  }
+  .chart-col-title {
+    font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold-bright); text-align: center; margin-bottom: 4px;
+  }
+  .chart-col-sub {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12px;
+    color: var(--bone-dim); text-align: center; margin-bottom: 16px;
+  }
+
+  .fact-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--line);
+  }
+  .fact-row:last-child { border-bottom: none; }
+  .fact-label {
+    font-family: 'Cinzel', serif; font-size: 9.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--bone-dim);
+  }
+  .fact-value {
+    font-family: 'Cormorant Garamond', serif; font-size: 14.5px; color: var(--gold-bright); font-weight: 600; text-align: right;
+  }
+
+  /* human design foundational grid */
+  .hd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .hd-cell {
+    border: 1px solid var(--line); background: var(--charcoal); padding: 10px; text-align: center;
+  }
+  .hd-cell-label { font-family: 'Cinzel', serif; font-size: 8.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--bone-dim); }
+  .hd-cell-value { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--gold-bright); font-weight: 600; margin-top: 3px; }
+
+  /* planetary gates table */
+  .gate-list { margin-top: 14px; }
+  .gate-row {
+    display: grid; grid-template-columns: 24px 1fr auto; gap: 8px; align-items: center;
+    padding: 6px 0; border-bottom: 1px dotted var(--line); font-size: 13px;
+  }
+  .gate-row:last-child { border-bottom: none; }
+  .gate-planet-symbol { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; }
+  .gate-planet-name { font-family: 'Cormorant Garamond', serif; color: var(--bone); }
+  .gate-number { font-family: 'Cinzel', serif; color: var(--lilac); font-size: 12px; }
+
+  /* centers defined/open */
+  .centers-list { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .center-chip {
+    font-family: 'Cinzel', serif; font-size: 9.5px; letter-spacing: 0.5px; text-transform: uppercase;
+    padding: 5px 10px; border-radius: 12px; border: 1px solid var(--line);
+  }
+  .center-chip.defined { background: rgba(184,155,108,0.18); border-color: var(--gold); color: var(--gold-bright); }
+  .center-chip.open { background: none; color: var(--bone-dim); }
+
+  /* incarnation cross callout */
+  .cross-box {
+    border: 1px solid var(--gold); background: rgba(184,155,108,0.06);
+    padding: 16px 18px; margin-top: 16px; text-align: center;
+  }
+  .cross-title { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px; color: var(--gold-bright); text-transform: uppercase; }
+  .cross-name { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--bone); margin-top: 6px; font-weight: 600; }
+  .cross-desc { font-family: 'Cormorant Garamond', serif; font-size: 13.5px; color: var(--lilac); font-style: italic; margin-top: 8px; line-height: 1.5; }
+
+  /* ---------- houses reference ---------- */
+  .houses-grid {
+    display: grid; grid-template-columns: 1fr; gap: 10px;
+  }
+  .house-card {
+    border: 1px solid var(--line); background: var(--panel); padding: 14px 18px;
+    display: grid; grid-template-columns: 50px 1fr; gap: 14px; align-items: start;
+  }
+  .house-num {
+    font-family: 'Cinzel', serif; font-size: 22px; color: var(--gold); text-align: center;
+  }
+  .house-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; color: var(--gold-bright); }
+  .house-desc { font-family: 'Jost', sans-serif; font-size: 13px; color: var(--bone); margin-top: 4px; line-height: 1.5; }
+
+  /* glossary */
+  .glossary-grid { display: flex; flex-direction: column; gap: 10px; }
+  .glossary-item { border: 1px solid var(--line); background: var(--panel); padding: 14px 18px; }
+  .glossary-term { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--gold-bright); }
+  .glossary-def { font-family: 'Cormorant Garamond', serif; font-size: 14.5px; color: var(--bone); margin-top: 6px; line-height: 1.5; }
+
+  footer {
+    text-align: center; margin-top: 60px; font-family: 'Cormorant Garamond', serif;
+    font-style: italic; color: var(--bone-dim); font-size: 13px;
+  }
+  footer .mark { color: var(--gold); font-size: 16px; display: block; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a class="back-link" href="index.html">← back to grimoire</a>
+
+  <header>
+    <h1 class="sigil">Birth Chart & Design</h1>
+    <div class="subtitle">the sky the day you arrived, and the sky today</div>
+    <div class="divider"></div>
+  </header>
+
+  <!-- MOON + TRANSIT HERO -->
+  <div class="cosmic-hero">
+    <div class="moon-row">
+      <div class="moon-icon" id="moonIcon">🌑</div>
+      <div class="moon-info-text">
+        <div class="moon-phase-name" id="moonPhaseName">—</div>
+        <div class="moon-sign" id="moonDateText">—</div>
+      </div>
+    </div>
+    <div class="transit-blurb">
+      <div class="transit-label">Today's Sky, In Plain English</div>
+      <div id="transitText">—</div>
+    </div>
+  </div>
+
+  <!-- TWO COLUMN CHARTS -->
+  <div class="section-label">Your Charts, Side by Side</div>
+  <div class="section-sub">left: your energetic blueprint · right: your cosmic snapshot</div>
+
+  <div class="chart-columns">
+
+    <!-- HUMAN DESIGN COLUMN -->
+    <div class="chart-col">
+      <div class="chart-col-title">Human Design</div>
+      <div class="chart-col-sub">June 20, 2002 · 12:27 AM · Brooklyn, NY</div>
+
+      <div class="hd-grid">
+        <div class="hd-cell"><div class="hd-cell-label">Type</div><div class="hd-cell-value">Generator</div></div>
+        <div class="hd-cell"><div class="hd-cell-label">Strategy</div><div class="hd-cell-value">To Respond</div></div>
+        <div class="hd-cell"><div class="hd-cell-label">Authority</div><div class="hd-cell-value">Sacral</div></div>
+        <div class="hd-cell"><div class="hd-cell-label">Profile</div><div class="hd-cell-value">1 / 3</div></div>
+        <div class="hd-cell"><div class="hd-cell-label">Definition</div><div class="hd-cell-value">Single</div></div>
+        <div class="hd-cell"><div class="hd-cell-label">Not-Self</div><div class="hd-cell-value">Frustration</div></div>
+      </div>
+
+      <div class="fact-row" style="margin-top:14px; border-top: 1px solid var(--line); padding-top:14px;">
+        <div class="fact-label">Defined Centers</div>
+      </div>
+      <div class="centers-list">
+        <span class="center-chip defined">Heart</span>
+        <span class="center-chip defined">G Center</span>
+        <span class="center-chip defined">Sacral</span>
+        <span class="center-chip open">Solar Plexus</span>
+        <span class="center-chip open">Splenic</span>
+        <span class="center-chip open">Ajna</span>
+        <span class="center-chip open">Head</span>
+        <span class="center-chip open">Root</span>
+        <span class="center-chip open">Throat</span>
+      </div>
+
+      <div class="gate-list">
+        <div class="fact-row" style="border: none; padding-bottom: 4px;">
+          <div class="fact-label">Design (Body) Gates</div>
+        </div>
+        <div class="gate-row"><span class="gate-planet-symbol">☉</span><span class="gate-planet-name">Sun</span><span class="gate-number">25.3</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">⊕</span><span class="gate-planet-name">Earth</span><span class="gate-number">46.3</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">☽</span><span class="gate-planet-name">Moon</span><span class="gate-number">12.1</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">☊</span><span class="gate-planet-name">North Node</span><span class="gate-number">45.5</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">☋</span><span class="gate-planet-name">South Node</span><span class="gate-number">26.5</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">☿</span><span class="gate-planet-name">Mercury</span><span class="gate-number">63.5</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">♀</span><span class="gate-planet-name">Venus</span><span class="gate-number">51.2</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">♂</span><span class="gate-planet-name">Mars</span><span class="gate-number">2.1</span></div>
+      </div>
+
+      <div class="gate-list">
+        <div class="fact-row" style="border: none; padding-bottom: 4px; margin-top: 10px;">
+          <div class="fact-label">Personality (Conscious) Gates</div>
+        </div>
+        <div class="gate-row"><span class="gate-planet-symbol">☉</span><span class="gate-planet-name">Sun</span><span class="gate-number">15.1</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">⊕</span><span class="gate-planet-name">Earth</span><span class="gate-number">10.1</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">☽</span><span class="gate-planet-name">Moon</span><span class="gate-number">50.2</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">☊</span><span class="gate-planet-name">North Node</span><span class="gate-number">45.1</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">☋</span><span class="gate-planet-name">South Node</span><span class="gate-number">26.1</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">☿</span><span class="gate-planet-name">Mercury</span><span class="gate-number">16.1</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">♀</span><span class="gate-planet-name">Venus</span><span class="gate-number">31.5</span></div>
+        <div class="gate-row"><span class="gate-planet-symbol">♂</span><span class="gate-planet-name">Mars</span><span class="gate-number">39.6</span></div>
+      </div>
+
+      <div class="cross-box">
+        <div class="cross-title">Incarnation Cross</div>
+        <div class="cross-name">Right Angle Cross of<br>The Vessel of Love (15/10 | 25/46)</div>
+        <div class="cross-desc">Your life purpose centers on love as a way of being — self-love, love of humanity, and embodiment. You're here to show what it looks like to love yourself so completely that it changes everyone around you.</div>
+      </div>
+    </div>
+
+    <!-- ASTROLOGY COLUMN -->
+    <div class="chart-col">
+      <div class="chart-col-title">Birth Chart</div>
+      <div class="chart-col-sub">Western Tropical Astrology</div>
+
+      <div class="fact-row"><span class="fact-label">☉ Sun Sign</span><span class="fact-value">Gemini</span></div>
+      <div class="fact-row"><span class="fact-label">☽ Moon Sign</span><span class="fact-value">Pisces*</span></div>
+      <div class="fact-row"><span class="fact-label">↑ Rising / Ascendant</span><span class="fact-value">Aquarius / Pisces*</span></div>
+
+      <div class="fact-row" style="margin-top:14px; border-top: 1px solid var(--line); padding-top:14px;">
+        <span class="fact-label">Element</span><span class="fact-value">Air (Gemini)</span>
+      </div>
+      <div class="fact-row"><span class="fact-label">Modality</span><span class="fact-value">Mutable</span></div>
+      <div class="fact-row"><span class="fact-label">Ruling Planet</span><span class="fact-value">Mercury</span></div>
+
+      <div class="cross-box" style="margin-top: 20px;">
+        <div class="cross-title">What Gemini Sun Means</div>
+        <div class="cross-desc" style="color: var(--bone); font-style: normal;">Curious, communicative, quick-thinking. You process the world through words, ideas, and connection — often seeing multiple sides of anything before landing on one. Your ruling planet Mercury (communication, thought) explains why your Human Design also lights up so heavily in the Throat center gates — this is a lifelong throughline, not a coincidence.</div>
+      </div>
+
+      <div class="cross-box">
+        <div class="cross-title">* A Note On Accuracy</div>
+        <div class="cross-desc">Moon sign and Rising sign are highly time-sensitive — small birth-time errors can shift them. These are best-estimate based on your birth data; for exact certainty, run your data through a dedicated astrology calculator like Astro.com or Co-Star.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- HOUSES REFERENCE -->
+  <div class="section-label">The 12 Houses</div>
+  <div class="section-sub">what each part of your chart actually governs</div>
+
+  <div class="houses-grid" id="housesGrid"></div>
+
+  <!-- GLOSSARY -->
+  <div class="section-label">Learn the Language</div>
+  <div class="section-sub">so the charts above actually make sense</div>
+
+  <div class="glossary-grid">
+    <div class="glossary-item">
+      <div class="glossary-term">Birth Chart / Natal Chart</div>
+      <div class="glossary-def">A snapshot of exactly where every planet sat in the sky the moment you were born. It's fixed forever — it never changes, no matter how much time passes.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Transit</div>
+      <div class="glossary-def">Where a planet is <i>right now</i>, compared to where it was in your birth chart. When today's moon lines up near where a planet sat when you were born, that planet is "being transited" — it's briefly activated again.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Rising Sign / Ascendant</div>
+      <div class="glossary-def">The zodiac sign that was rising on the horizon the moment you were born. It's essentially your outward personality — first impressions, how you move through the world — separate from your inner Sun sign self.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Gate (Human Design)</div>
+      <div class="glossary-def">One of 64 specific energies mapped from the I Ching. Each planet in your chart "activates" a gate based on exactly where it sat when you were born — that gate becomes a lifelong theme in how you express yourself.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Channel</div>
+      <div class="glossary-def">When both gates on either end of a connection are activated, they form a Channel — a strong, consistent flow of energy between two Centers in your body graph.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Defined vs. Open Center</div>
+      <div class="glossary-def">A defined (colored-in) center is energy you have consistent, reliable access to. An open (white) center is where you're more absorbent — you take in and amplify energy from other people and your environment.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Incarnation Cross</div>
+      <div class="glossary-def">Built from your Sun and Earth gates (both Design and Personality) — this is considered your overarching life purpose or theme in Human Design.</div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="mark">✦</span>
+    the sky doesn't decide your life — it just describes your weather
+  </footer>
+</div>
+
+<script>
+  // ---------- moon phase ----------
+  function getMoonPhase(date) {
+    const synodic = 29.53058867;
+    const knownNewMoon = new Date('2000-01-06T18:14:00Z');
+    const diff = (date - knownNewMoon) / 86400000;
+    const phase = ((diff % synodic) + synodic) % synodic;
+    const idx = Math.floor((phase / synodic) * 8 + 0.5) % 8;
+    const phases = ['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
+    const icons = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+    // rough zodiac sign estimate: moon spends ~2.5 days per sign, cycling through all 12 every 29.5 days
+    const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+    const signIdx = Math.floor((phase / synodic) * 12) % 12;
+    return { name: phases[idx], icon: icons[idx], sign: signs[signIdx], dayInCycle: Math.floor(phase) };
+  }
+
+  const today = new Date();
+  const moon = getMoonPhase(today);
+  document.getElementById('moonIcon').textContent = moon.icon;
+  document.getElementById('moonPhaseName').textContent = moon.name;
+  document.getElementById('moonDateText').textContent = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) + ` · Moon in ${moon.sign}*`;
+
+  // ---------- simple daily transit blurb (plain-English, non-live-ephemeris) ----------
+  const MOON_SIGN_MEANINGS = {
+    'Aries': "quick to act, impatient with delay. Good day for starting something, not for sitting still.",
+    'Taurus': "craving comfort, good food, and slow pleasures. A grounding, sensory kind of day.",
+    'Gemini': "chatty, curious, mentally restless — this is a great day for content, conversation, and ideas (and it's activating your natal Sun sign, so it may feel extra loud).",
+    'Cancer': "emotionally tender, homesick for comfort. Good day for rest, family, and softness.",
+    'Leo': "wanting to be seen and appreciated. Good day for anything public-facing or creative.",
+    'Virgo': "detail-oriented, a little critical, wanting things organized. Good day for admin and cleanup.",
+    'Libra': "seeking harmony and balance, possibly indecisive. Good day for relationships and beauty.",
+    'Scorpio': "intense, probing, wanting depth over small talk. Good day for deep conversations or research.",
+    'Sagittarius': "restless for adventure and big-picture thinking. Good day for planning trips or big ideas.",
+    'Capricorn': "focused on responsibility and long-term goals. Good day for structured, disciplined work.",
+    'Aquarius': "detached, idea-driven, a bit rebellious. Good day for unconventional thinking or community.",
+    'Pisces': "dreamy, intuitive, emotionally porous. Good day for art, rest, and trusting your gut over logic."
+  };
+
+  function renderTransitBlurb() {
+    const meaning = MOON_SIGN_MEANINGS[moon.sign] || "in a reflective, quiet mood today.";
+    const el = document.getElementById('transitText');
+    el.innerHTML = `The Moon is currently in <b>${moon.sign}</b> — today's collective mood is ${meaning} <br><br>Since your natal Moon sits in Pisces, whenever the sky-Moon passes through Pisces (roughly every month, for about 2-3 days), it lines up with your own natal Moon — astrologers call this a <b>Lunar Return</b>, and it tends to feel like an emotional "reset day," even more sensitive and intuitive than usual.`;
+  }
+
+  renderTransitBlurb();
+
+  // ---------- 12 houses reference ----------
+  const HOUSES = [
+    { num: 1, name: 'Self & Identity', desc: 'How you appear to others, your instinctive approach to life, physical body and first impressions. Ruled by your Rising sign.' },
+    { num: 2, name: 'Money & Values', desc: 'Income, possessions, self-worth, and what you value — both financially and personally.' },
+    { num: 3, name: 'Communication & Siblings', desc: 'How you think, speak, and learn. Short trips, early education, siblings, and everyday communication.' },
+    { num: 4, name: 'Home & Family', desc: 'Roots, childhood, family, your literal home, and your emotional foundation.' },
+    { num: 5, name: 'Creativity & Romance', desc: 'Self-expression, creative projects, dating and romance, joy, and children.' },
+    { num: 6, name: 'Work & Health', desc: 'Daily routines, habits, physical health, and the day-to-day work you do (distinct from career/legacy).' },
+    { num: 7, name: 'Partnerships', desc: 'Marriage, business partners, close one-on-one relationships, and how you show up in committed pairings.' },
+    { num: 8, name: 'Transformation & Shared Resources', desc: 'Intimacy, deep psychological transformation, shared finances, inheritance, and life\'s bigger mysteries.' },
+    { num: 9, name: 'Philosophy & Travel', desc: 'Higher education, long-distance travel, belief systems, publishing, and expanding your worldview.' },
+    { num: 10, name: 'Career & Public Image', desc: 'Your legacy, career path, public reputation, and how the world sees your achievements.' },
+    { num: 11, name: 'Community & Friendship', desc: 'Friend groups, social causes, networking, and your hopes for the collective future.' },
+    { num: 12, name: 'The Subconscious', desc: 'Solitude, dreams, spirituality, hidden strengths, and what happens behind the scenes before you\'re ready to show it.' }
+  ];
+
+  function renderHouses() {
+    const container = document.getElementById('housesGrid');
+    container.innerHTML = '';
+    HOUSES.forEach(h => {
+      const div = document.createElement('div');
+      div.className = 'house-card';
+      div.innerHTML = `
+        <div class="house-num">${h.num}</div>
+        <div>
+          <div class="house-name">${h.name}</div>
+          <div class="house-desc">${h.desc}</div>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  renderHouses();
+</script>
+
+</body>
+</html>

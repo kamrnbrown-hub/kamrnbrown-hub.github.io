@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Higher Self — Kam'rn's Enigmas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #0d0b10;
+    --charcoal: #17141a;
+    --panel: #1e1a22;
+    --burgundy: #5c2a3a;
+    --burgundy-bright: #8a3f54;
+    --eggplant: #3d2a45;
+    --dusty-blue: #5c7285;
+    --gold: #b89b6c;
+    --gold-bright: #d4b483;
+    --lilac: #b9a4c9;
+    --bone: #e8e2d8;
+    --bone-dim: #a89e93;
+    --line: rgba(184,155,108,0.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--void);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(92,42,58,0.35), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(61,42,69,0.3), transparent);
+    color: var(--bone);
+    font-family: 'Jost', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 60px;
+  }
+  .container { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+  .back-link {
+    display: inline-block; margin: 24px 0 0; font-family: 'Cinzel', serif;
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold); text-decoration: none; opacity: 0.8;
+  }
+  header { text-align: center; padding: 20px 20px 24px; }
+  h1.sigil {
+    font-family: 'Cinzel', serif; font-size: clamp(24px, 6.5vw, 38px); font-weight: 600;
+    letter-spacing: 1.5px; margin: 10px 0 6px; white-space: nowrap;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold) 60%, var(--burgundy-bright));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .subtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: var(--lilac); }
+  .divider {
+    width: 120px; height: 1px; margin: 20px auto 0;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent); position: relative;
+  }
+  .divider::before {
+    content: "✦"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    background: var(--void); padding: 0 10px; color: var(--gold); font-size: 12px;
+  }
+
+  /* generate button */
+  .generate-box { text-align: center; margin: 30px 0 40px; }
+  .generate-btn {
+    background: linear-gradient(160deg, rgba(184,155,108,0.15), rgba(184,155,108,0.05));
+    border: 1px solid var(--gold); color: var(--gold-bright);
+    font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 16px 36px; cursor: pointer;
+  }
+  .generate-btn:hover { background: rgba(184,155,108,0.15); }
+  .last-generated {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12px;
+    color: var(--bone-dim); margin-top: 10px;
+  }
+
+  .briefing { display: none; }
+  .briefing.active { display: block; }
+
+  /* section card */
+  .brief-card {
+    border: 1px solid var(--line);
+    background: linear-gradient(160deg, var(--panel), var(--charcoal));
+    padding: 20px 22px; margin-bottom: 16px; position: relative;
+  }
+  .brief-card::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+    background: var(--gold); opacity: 0.5;
+  }
+  .brief-label {
+    font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .brief-icon { font-size: 14px; }
+
+  /* header hero (date/cycle/moon) */
+  .hero-card {
+    border: 1px solid var(--gold);
+    background: linear-gradient(160deg, rgba(184,155,108,0.08), rgba(184,155,108,0.02));
+    padding: 24px; text-align: center; margin-bottom: 16px;
+  }
+  .hero-greeting {
+    font-family: 'Cinzel', serif; font-size: 20px; letter-spacing: 1px; color: var(--gold-bright);
+  }
+  .hero-date {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: var(--lilac); margin-top: 4px;
+  }
+  .hero-facts {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 18px;
+  }
+  .hero-fact { border-top: 1px solid var(--line); padding-top: 10px; }
+  .hero-fact-label { font-family: 'Cinzel', serif; font-size: 8.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--bone-dim); }
+  .hero-fact-value { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--gold-bright); font-weight: 600; margin-top: 3px; }
+
+  /* bills / calendar list items */
+  .brief-item {
+    display: flex; justify-content: space-between; align-items: center;
+    border-left: 2px solid var(--line); background: var(--charcoal);
+    padding: 9px 12px; margin-bottom: 6px; font-size: 13.5px;
+  }
+  .brief-item.bill { border-left-color: var(--burgundy-bright); }
+  .brief-item.event { border-left-color: var(--dusty-blue); }
+  .brief-item-name { font-family: 'Cormorant Garamond', serif; color: var(--bone); }
+  .brief-item-meta { font-family: 'Cinzel', serif; font-size: 10px; color: var(--bone-dim); text-transform: uppercase; }
+
+  .empty-note {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--bone-dim); font-size: 13px; padding: 6px 0;
+  }
+
+  /* affirmation */
+  .affirmation-text {
+    font-family: 'Cormorant Garamond', serif; font-size: 19px; font-style: italic; color: var(--gold-bright);
+    text-align: center; line-height: 1.5; padding: 6px 0;
+  }
+
+  /* hd tips */
+  .tip-item {
+    font-family: 'Cormorant Garamond', serif; font-size: 14.5px; color: var(--bone);
+    padding: 8px 0; border-bottom: 1px dotted var(--line); line-height: 1.5;
+  }
+  .tip-item:last-child { border-bottom: none; }
+  .tip-item b { color: var(--lilac); }
+
+  /* goals checklist */
+  .goal-mini-list { display: flex; flex-direction: column; gap: 6px; }
+  .goal-mini-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--bone);
+  }
+  .goal-mini-item.done { color: var(--bone-dim); text-decoration: line-through; }
+  .goal-mini-check { color: var(--gold-bright); font-size: 12px; width: 14px; }
+  .goal-category-label {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--gold); margin-top: 10px; margin-bottom: 4px;
+  }
+  .goal-category-label:first-child { margin-top: 0; }
+
+  footer {
+    text-align: center; margin-top: 60px; font-family: 'Cormorant Garamond', serif;
+    font-style: italic; color: var(--bone-dim); font-size: 13px;
+  }
+  footer .mark { color: var(--gold); font-size: 16px; display: block; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a class="back-link" href="index.html">← back to grimoire</a>
+
+  <header>
+    <h1 class="sigil">Higher Self</h1>
+    <div class="subtitle">everything you need to know, all in one place</div>
+    <div class="divider"></div>
+  </header>
+
+  <div class="generate-box">
+    <button class="generate-btn" onclick="generateBriefing()">✦ Generate My Briefing</button>
+    <div class="last-generated" id="lastGenerated"></div>
+  </div>
+
+  <div class="briefing" id="briefing">
+
+    <div class="hero-card">
+      <div class="hero-greeting" id="heroGreeting">Good morning, Kam'rn</div>
+      <div class="hero-date" id="heroDate">—</div>
+      <div class="hero-facts">
+        <div class="hero-fact">
+          <div class="hero-fact-label">Cycle Day</div>
+          <div class="hero-fact-value" id="factCycleDay">—</div>
+        </div>
+        <div class="hero-fact">
+          <div class="hero-fact-label">Moon Phase</div>
+          <div class="hero-fact-value" id="factMoonPhase">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brief-card">
+      <div class="brief-label"><span class="brief-icon">💸</span> Bills Due This Week</div>
+      <div id="billsSection"></div>
+    </div>
+
+    <div class="brief-card">
+      <div class="brief-label"><span class="brief-icon">📅</span> On the Calendar This Week</div>
+      <div id="calendarSection"></div>
+    </div>
+
+    <div class="brief-card">
+      <div class="brief-label"><span class="brief-icon">🕯️</span> Today's Affirmation</div>
+      <div class="affirmation-text" id="affirmationText">—</div>
+    </div>
+
+    <div class="brief-card">
+      <div class="brief-label"><span class="brief-icon">✨</span> Tips For You Today</div>
+      <div id="hdTipsSection"></div>
+    </div>
+
+    <div class="brief-card">
+      <div class="brief-label"><span class="brief-icon">🎯</span> Today's Goals</div>
+      <div id="dailyGoalsSection"></div>
+    </div>
+
+    <div class="brief-card">
+      <div class="brief-label"><span class="brief-icon">📊</span> This Week's Goals</div>
+      <div id="weeklyGoalsSection"></div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span class="mark">✦</span>
+    everything you need is already inside you — this is just a mirror
+  </footer>
+</div>
+
+<script>
+  function load(key, fallback) {
+    try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+    catch(e) { return fallback; }
+  }
+
+  // ---------- cycle data (from hormones.html) ----------
+  const CYCLE_LENGTH = 30;
+
+  function getCycleStartDate() {
+    const saved = localStorage.getItem('kamrn_cycle_start');
+    return saved ? new Date(saved + 'T00:00:00') : null;
+  }
+
+  function getCycleDay(startDate) {
+    const today = new Date(new Date().toDateString());
+    const diffDays = Math.floor((today - startDate) / 86400000);
+    return ((diffDays % CYCLE_LENGTH) + CYCLE_LENGTH) % CYCLE_LENGTH + 1;
+  }
+
+  function getPhaseForDay(day) {
+    if (day >= 14 && day <= 16) return { key: 'ovulation', name: 'Ovulation', icon: '☀️' };
+    if (day >= 1 && day <= 5) return { key: 'period', name: 'Period', icon: '🩸' };
+    if (day >= 6 && day <= 13) return { key: 'follicular', name: 'Follicular', icon: '🌱' };
+    return { key: 'luteal', name: 'Luteal', icon: '🍂' };
+  }
+
+  // ---------- moon phase ----------
+  function getMoonPhase(date) {
+    const synodic = 29.53058867;
+    const knownNewMoon = new Date('2000-01-06T18:14:00Z');
+    const diff = (date - knownNewMoon) / 86400000;
+    const phase = ((diff % synodic) + synodic) % synodic;
+    const idx = Math.floor((phase / synodic) * 8 + 0.5) % 8;
+    const phases = ['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
+    const icons = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+    return { name: phases[idx], icon: icons[idx] };
+  }
+
+  // ---------- affirmations per phase ----------
+  const PHASE_AFFIRMATIONS = {
+    period: [
+      "I honor my body's need to rest. Slowing down is not falling behind.",
+      "My worth isn't measured by my output today. I am allowed to simply be.",
+      "I release what no longer serves me, just as my body releases what it no longer needs."
+    ],
+    follicular: [
+      "New ideas move through me easily. I trust my rising energy.",
+      "I am building something real, one clear thought at a time.",
+      "My curiosity is a compass. I follow it without apology."
+    ],
+    ovulation: [
+      "I am magnetic. What is meant for me finds me easily.",
+      "My voice is clear, my presence is felt, and I trust what I say.",
+      "I show up fully today — visible, confident, unafraid to be seen."
+    ],
+    luteal: [
+      "Frustration is information, not failure. I pause and listen to my gut.",
+      "I finish what I started with patience, not pressure.",
+      "I am allowed to protect my energy as this month comes to a close."
+    ]
+  };
+
+  // ---------- Human Design + birth chart tips per phase ----------
+  const HD_TIPS = {
+    period: [
+      "<b>Sacral Authority:</b> your gut is quieter right now — don't force big decisions, wait for clearer energy.",
+      "<b>Generator:</b> low output is not laziness. This is the one phase where rest is literally your most aligned move."
+    ],
+    follicular: [
+      "<b>Profile 1/3:</b> this is your best window to research something new — feed the Investigator in you.",
+      "<b>Gemini Sun:</b> your mind is extra sharp for new ideas right now — capture them as they come."
+    ],
+    ovulation: [
+      "<b>Throat Gates (16, 12, 45):</b> your voice is at its most naturally activated — this is the day to speak, post, or pitch.",
+      "<b>Sacral Authority:</b> gut responses are loud and clear today — trust the first 'yes' or 'no' you feel."
+    ],
+    luteal: [
+      "<b>Not-Self Theme — Frustration:</b> if it shows up today, it's a signal you're forcing something. Pause before reacting.",
+      "<b>Profile 1/3 — Line 3:</b> this is a natural editing/troubleshooting phase — expect to refine, not create from scratch."
+    ]
+  };
+
+  function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  // ---------- bills (from finance.html) ----------
+  function getBillsDueThisWeek() {
+    const bills = load('kamrn_bills_list', []);
+    // bills only have a "due" string like "20th", not a real date — so we do a soft text-based check
+    const today = new Date();
+    const currentDate = today.getDate();
+    const upcoming = [];
+
+    bills.forEach(bill => {
+      const dueNum = parseInt(bill.due);
+      if (isNaN(dueNum)) return;
+      const daysUntil = dueNum - currentDate;
+      // catch anything due in the next 7 days (including today, including wrap-around near month end)
+      if ((daysUntil >= 0 && daysUntil <= 7) || (daysUntil < -23)) {
+        upcoming.push(bill);
+      }
+    });
+
+    return upcoming;
+  }
+
+  // ---------- calendar events (from calendar.html) ----------
+  function getEventsThisWeek() {
+    const allEvents = load('kamrn_calendar_events', {});
+    const today = new Date();
+    const results = [];
+
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const dayEvents = allEvents[key] || [];
+      dayEvents.forEach(ev => {
+        results.push({ ...ev, date: d });
+      });
+    }
+    return results;
+  }
+
+  // ---------- goals (from goals.html) ----------
+  const GOAL_CATEGORIES = ['Spiritual', 'Adulting', 'Education', 'Health', 'Finances', 'Hobbies/Fun', 'Business', 'Life/Relationships'];
+
+  function getGoalsForTimeframe(timeframe) {
+    const result = {};
+    GOAL_CATEGORIES.forEach(cat => {
+      const goals = load(`kamrn_goals_${timeframe}_${cat}`, []);
+      if (goals.length > 0) result[cat] = goals;
+    });
+    return result;
+  }
+
+  // ---------- main generate function ----------
+  function generateBriefing() {
+    const today = new Date();
+
+    document.getElementById('heroDate').textContent = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+    // cycle
+    const startDate = getCycleStartDate();
+    let phase = null;
+    if (startDate) {
+      const day = getCycleDay(startDate);
+      phase = getPhaseForDay(day);
+      document.getElementById('factCycleDay').textContent = `Day ${day} — ${phase.name}`;
+    } else {
+      document.getElementById('factCycleDay').textContent = 'Not set yet';
+    }
+
+    // moon
+    const moon = getMoonPhase(today);
+    document.getElementById('factMoonPhase').textContent = moon.icon + ' ' + moon.name;
+
+    // bills
+    const bills = getBillsDueThisWeek();
+    const billsSection = document.getElementById('billsSection');
+    billsSection.innerHTML = '';
+    if (bills.length === 0) {
+      billsSection.innerHTML = '<div class="empty-note">nothing due in the next 7 days</div>';
+    } else {
+      bills.forEach(b => {
+        const div = document.createElement('div');
+        div.className = 'brief-item bill';
+        div.innerHTML = `<div class="brief-item-name">${b.name}</div><div class="brief-item-meta">$${b.amount} · due ${b.due}</div>`;
+        billsSection.appendChild(div);
+      });
+    }
+
+    // calendar events
+    const events = getEventsThisWeek();
+    const calSection = document.getElementById('calendarSection');
+    calSection.innerHTML = '';
+    if (events.length === 0) {
+      calSection.innerHTML = '<div class="empty-note">nothing added to the calendar this week</div>';
+    } else {
+      events.forEach(ev => {
+        const div = document.createElement('div');
+        div.className = 'brief-item event';
+        const dateStr = ev.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        div.innerHTML = `<div class="brief-item-name">${ev.text}</div><div class="brief-item-meta">${dateStr}</div>`;
+        calSection.appendChild(div);
+      });
+    }
+
+    // affirmation
+    const phaseKey = phase ? phase.key : 'follicular';
+    const affirmation = pickRandom(PHASE_AFFIRMATIONS[phaseKey]);
+    document.getElementById('affirmationText').textContent = '"' + affirmation + '"';
+
+    // HD tips
+    const tips = HD_TIPS[phaseKey];
+    const tipsSection = document.getElementById('hdTipsSection');
+    tipsSection.innerHTML = '';
+    tips.forEach(tip => {
+      const div = document.createElement('div');
+      div.className = 'tip-item';
+      div.innerHTML = tip;
+      tipsSection.appendChild(div);
+    });
+
+    // daily goals
+    const dailyGoals = getGoalsForTimeframe('daily');
+    renderGoalSection('dailyGoalsSection', dailyGoals);
+
+    // weekly goals
+    const weeklyGoals = getGoalsForTimeframe('weekly');
+    renderGoalSection('weeklyGoalsSection', weeklyGoals);
+
+    // show briefing, save timestamp
+    document.getElementById('briefing').classList.add('active');
+    const now = new Date();
+    localStorage.setItem('kamrn_higherself_last_generated', now.toISOString());
+    updateLastGenerated();
+  }
+
+  function renderGoalSection(elementId, goalsByCategory) {
+    const container = document.getElementById(elementId);
+    container.innerHTML = '';
+
+    const categories = Object.keys(goalsByCategory);
+    if (categories.length === 0) {
+      container.innerHTML = '<div class="empty-note">no goals set for this — add some on the Goals page</div>';
+      return;
+    }
+
+    categories.forEach(cat => {
+      const catLabel = document.createElement('div');
+      catLabel.className = 'goal-category-label';
+      catLabel.textContent = cat;
+      container.appendChild(catLabel);
+
+      const list = document.createElement('div');
+      list.className = 'goal-mini-list';
+      goalsByCategory[cat].forEach(g => {
+        const item = document.createElement('div');
+        item.className = 'goal-mini-item' + (g.done ? ' done' : '');
+        item.innerHTML = `<span class="goal-mini-check">${g.done ? '✓' : '○'}</span><span>${g.text}</span>`;
+        list.appendChild(item);
+      });
+      container.appendChild(list);
+    });
+  }
+
+  function updateLastGenerated() {
+    const saved = localStorage.getItem('kamrn_higherself_last_generated');
+    if (saved) {
+      const d = new Date(saved);
+      document.getElementById('lastGenerated').textContent = 'last generated ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) + ' today';
+    }
+  }
+
+  updateLastGenerated();
+</script>
+
+</body>
+</html>
