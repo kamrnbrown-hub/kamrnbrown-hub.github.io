@@ -565,10 +565,25 @@
     document.getElementById('cycleDay').textContent = '—';
   }
 
-  // ---------- vision wall photo slots (in-memory only per session) ----------
+  // ---------- vision wall photo slots (persisted to localStorage) ----------
   const wall = document.getElementById('visionWall');
   const slotCount = 6;
-  const images = {};
+  const PHOTO_KEY_PREFIX = 'kamrn_vision_photo_';
+
+  function loadImage(i) {
+    return localStorage.getItem(PHOTO_KEY_PREFIX + i);
+  }
+  function saveImage(i, dataUrl) {
+    try {
+      localStorage.setItem(PHOTO_KEY_PREFIX + i, dataUrl);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+  function removeImage(i) {
+    localStorage.removeItem(PHOTO_KEY_PREFIX + i);
+  }
 
   function renderSlot(i) {
     const frame = document.createElement('div');
@@ -583,10 +598,30 @@
     input.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
+
+      // downscale large images before storing, so localStorage doesn't fill up
+      const img = new Image();
       const reader = new FileReader();
       reader.onload = (ev) => {
-        images[i] = ev.target.result;
-        renderFrameContent(i);
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxDim = 800;
+          let w = img.width, h = img.height;
+          if (w > h && w > maxDim) { h = h * (maxDim / w); w = maxDim; }
+          else if (h > maxDim) { w = w * (maxDim / h); h = maxDim; }
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/jpeg', 0.8);
+
+          const ok = saveImage(i, compressed);
+          if (!ok) {
+            alert('This photo is too large to save. Try a smaller image.');
+            return;
+          }
+          renderFrameContent(i);
+        };
+        img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
     });
@@ -603,20 +638,20 @@
 
   function renderFrameContentInto(frame, i) {
     frame.classList.remove('has-image');
-    const existing = frame.querySelector('.frame-empty, img, .frame-remove');
     frame.querySelectorAll('.frame-empty, img, .frame-remove').forEach(el => el.remove());
 
-    if (images[i]) {
+    const savedImage = loadImage(i);
+    if (savedImage) {
       frame.classList.add('has-image');
       const img = document.createElement('img');
-      img.src = images[i];
+      img.src = savedImage;
       frame.appendChild(img);
       const rm = document.createElement('div');
       rm.className = 'frame-remove';
       rm.textContent = '×';
       rm.addEventListener('click', (e) => {
         e.stopPropagation();
-        delete images[i];
+        removeImage(i);
         renderFrameContentInto(frame, i);
       });
       frame.appendChild(rm);
