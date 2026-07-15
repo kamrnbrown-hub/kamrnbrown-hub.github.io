@@ -415,42 +415,6 @@
     <span class="accent" id="todayFull">—</span><span class="sep">·</span><span class="line-break"></span><span class="accent" id="moonPhase">—</span><span class="sep">·</span><span class="line-break"></span>Cycle Day <span class="accent" id="cycleDay">—</span>
   </div>
 
-  <div class="section-label">Your Energy Blueprint</div>
-  <div class="section-sub" id="dailyDirectiveIntro">today's alignment, based on your design</div>
-
-  <div class="hd-grid">
-    <div class="hd-card">
-      <div class="hd-label">Type</div>
-      <div class="hd-value">Generator</div>
-      <div class="hd-directive">🧲 Be magnetic. Let things come to you.</div>
-    </div>
-    <div class="hd-card">
-      <div class="hd-label">Strategy</div>
-      <div class="hd-value">To Respond</div>
-      <div class="hd-directive">🛑 Stop forcing the hustle. React to real cues.</div>
-    </div>
-    <div class="hd-card">
-      <div class="hd-label">Authority</div>
-      <div class="hd-value">Sacral</div>
-      <div class="hd-directive">🔊 Listen for the gut sound — uh-huh or uh-uh.</div>
-    </div>
-    <div class="hd-card">
-      <div class="hd-label">Profile</div>
-      <div class="hd-value">1/3</div>
-      <div class="hd-directive">📊 Research deeply, then test and break things.</div>
-    </div>
-    <div class="hd-card hd-wide">
-      <div class="hd-label">Check-In</div>
-      <div class="hd-value">Frustration = Realign · Satisfaction = Win</div>
-      <div class="hd-directive">🧭 Your energy is your only honest feedback loop.</div>
-    </div>
-  </div>
-
-  <div class="daily-directive-box" id="dailyDirectiveBox">
-    <div class="dd-label">Today's Directive</div>
-    <div class="dd-text" id="dailyDirectiveText">—</div>
-  </div>
-
   <div class="section-label">The Vision Wall</div>
   <div class="section-sub">click any frame to place your own image</div>
 
@@ -537,8 +501,8 @@
       <span class="tc1"></span><span class="tc2"></span>
       <div class="tile-icon">🕯️</div>
       <div>
-        <div class="tile-name">Higher Self</div>
-        <div class="tile-desc">daily briefing prompt & affirmations</div>
+        <div class="tile-name">Daily Briefing</div>
+        <div class="tile-desc">everything today, in one glance</div>
       </div>
     </a>
 
@@ -579,7 +543,7 @@
   document.getElementById('moonPhase').textContent = moon.icon + ' ' + moon.name;
 
   // ---------- cycle day (reads from hormones.html's localStorage) ----------
-  const CYCLE_LENGTH = 31;
+  const CYCLE_LENGTH = 30;
   const STORAGE_KEY = 'kamrn_cycle_start';
 
   function getCycleStartDate() {
@@ -594,32 +558,11 @@
     return ((diffDays % CYCLE_LENGTH) + CYCLE_LENGTH) % CYCLE_LENGTH + 1;
   }
 
-  function getPhaseKey(day) {
-    if (day >= 12 && day <= 17) return 'ovulation';
-    if (day >= 1 && day <= 7) return 'period';
-    if (day >= 8 && day <= 11) return 'follicular';
-    return 'luteal';
-  }
-
-  const phaseDirectives = {
-    period: "You're in <b>Period</b> phase — energy is lowest, rest is productive. Pair this with your Sacral Authority: don't force output today, respond only to what truly pulls a gut 'yes.'",
-    follicular: "You're in <b>Follicular</b> phase — rising energy, sharp new ideas. As a 1/3 Profile, this is a great window to research and plan, then start testing small experiments.",
-    ovulation: "You're in <b>Ovulation</b> phase — peak magnetism and voice. Your Throat gates are naturally activated. Film content, pitch, respond to opportunities that show up now.",
-    luteal: "You're in <b>Luteal</b> phase — turning inward. Watch for your Not-Self Theme, Frustration, creeping in. If you feel it, you're forcing — pause and let your gut re-decide."
-  };
-
   const startDate = getCycleStartDate();
-  let cycleDay = null;
-  let phaseKey = null;
-
   if (startDate) {
-    cycleDay = getCycleDayNum(startDate);
-    phaseKey = getPhaseKey(cycleDay);
-    document.getElementById('cycleDay').textContent = cycleDay;
-    document.getElementById('dailyDirectiveText').innerHTML = phaseDirectives[phaseKey];
+    document.getElementById('cycleDay').textContent = getCycleDayNum(startDate);
   } else {
     document.getElementById('cycleDay').textContent = '—';
-    document.getElementById('dailyDirectiveText').innerHTML = "Set your period start date on the <a href='hormones.html' style='color:var(--gold-bright)'>Hormone Balance</a> page to unlock phase-specific daily directives.";
   }
 
   // ---------- vision wall photo slots (in-memory only per session) ----------

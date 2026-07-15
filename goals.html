@@ -130,6 +130,21 @@
   }
   .category-block.collapsed .category-body { display: none; }
 
+  .funnel-context {
+    border: 1px dashed var(--line);
+    background: rgba(185,164,201,0.05);
+    padding: 10px 12px;
+    margin-bottom: 14px;
+  }
+  .funnel-label {
+    font-family: 'Cinzel', serif; font-size: 8.5px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--lilac); margin-bottom: 6px;
+  }
+  .funnel-item {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: var(--bone-dim);
+    padding: 2px 0;
+  }
+
   /* goal items */
   .goal-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
   .goal-item {
@@ -230,20 +245,16 @@
   <div class="phase-nudge" id="phaseNudge">—</div>
 
   <div class="tab-bar">
-    <button class="tab-btn active" data-tab="daily">Daily</button>
-    <button class="tab-btn" data-tab="weekly">Weekly</button>
-    <button class="tab-btn" data-tab="quarterly">Quarterly</button>
     <button class="tab-btn" data-tab="yearly">Yearly</button>
+    <button class="tab-btn" data-tab="quarterly">Quarterly</button>
+    <button class="tab-btn" data-tab="monthly">Monthly</button>
+    <button class="tab-btn" data-tab="weekly">Weekly</button>
+    <button class="tab-btn active" data-tab="daily">Daily</button>
   </div>
 
-  <div class="tab-panel active" id="tab-daily">
-    <div class="section-sub">what today is about</div>
-    <div class="category-container" data-timeframe="daily"></div>
-  </div>
-
-  <div class="tab-panel" id="tab-weekly">
-    <div class="section-sub">this week's focus</div>
-    <div class="category-container" data-timeframe="weekly"></div>
+  <div class="tab-panel" id="tab-yearly">
+    <div class="section-sub">the big picture</div>
+    <div class="category-container" data-timeframe="yearly"></div>
   </div>
 
   <div class="tab-panel" id="tab-quarterly">
@@ -251,9 +262,19 @@
     <div class="category-container" data-timeframe="quarterly"></div>
   </div>
 
-  <div class="tab-panel" id="tab-yearly">
-    <div class="section-sub">the big picture</div>
-    <div class="category-container" data-timeframe="yearly"></div>
+  <div class="tab-panel" id="tab-monthly">
+    <div class="section-sub">this month, in service of the season</div>
+    <div class="category-container" data-timeframe="monthly"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-weekly">
+    <div class="section-sub">this week's focus</div>
+    <div class="category-container" data-timeframe="weekly"></div>
+  </div>
+
+  <div class="tab-panel active" id="tab-daily">
+    <div class="section-sub">what today is about</div>
+    <div class="category-container" data-timeframe="daily"></div>
   </div>
 
   <footer>
@@ -264,7 +285,9 @@
 
 <script>
   const CATEGORIES = ['Spiritual', 'Adulting', 'Education', 'Health', 'Finances', 'Hobbies/Fun', 'Business', 'Life/Relationships'];
-  const TIMEFRAMES = ['daily', 'weekly', 'quarterly', 'yearly'];
+  const TIMEFRAMES = ['yearly', 'quarterly', 'monthly', 'weekly', 'daily'];
+  const PARENT_TIMEFRAME = { quarterly: 'yearly', monthly: 'quarterly', weekly: 'monthly', daily: 'weekly' };
+  const TIMEFRAME_LABELS = { yearly: 'Yearly', quarterly: 'Quarterly', monthly: 'Monthly', weekly: 'Weekly', daily: 'Daily' };
 
   // ---------- storage ----------
   function load(key, fallback) {
@@ -313,6 +336,22 @@
         const totalCount = goals.length + finances.length;
         const doneCount = goals.filter(g => g.done).length;
 
+        // funnel context: show parent timeframe's goals for this category, if any
+        let funnelHtml = '';
+        const parentTimeframe = PARENT_TIMEFRAME[timeframe];
+        if (parentTimeframe) {
+          const parentGoals = load(goalsKey(parentTimeframe, category), []);
+          if (parentGoals.length > 0) {
+            const parentItems = parentGoals.map(g => `<div class="funnel-item">${g.done ? '✓' : '○'} ${g.text}</div>`).join('');
+            funnelHtml = `
+              <div class="funnel-context">
+                <div class="funnel-label">In Service Of This ${TIMEFRAME_LABELS[parentTimeframe]} Goal</div>
+                ${parentItems}
+              </div>
+            `;
+          }
+        }
+
         block.innerHTML = `
           <div class="category-header">
             <div class="category-title">${category}</div>
@@ -322,6 +361,7 @@
             </div>
           </div>
           <div class="category-body">
+            ${funnelHtml}
             ${isFinance ? `<div class="finance-list" data-timeframe="${timeframe}" data-category="${category}"></div>` : ''}
             <div class="goal-list" data-timeframe="${timeframe}" data-category="${category}"></div>
             <div class="add-row">
@@ -388,6 +428,7 @@
         save(goalsKey(timeframe, category), goals);
         renderGoals(timeframe, category);
         updateCategoryCount(timeframe, category);
+        refreshFunnelContext(timeframe, category);
       });
       item.querySelector('.goal-delete').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -396,6 +437,7 @@
         save(goalsKey(timeframe, category), goals);
         renderGoals(timeframe, category);
         updateCategoryCount(timeframe, category);
+        refreshFunnelContext(timeframe, category);
       });
       listEl.appendChild(item);
     });
@@ -471,6 +513,38 @@
     });
   }
 
+  function refreshFunnelContext(parentTimeframe, category) {
+    // find any child timeframe whose parent is this timeframe, and refresh its funnel box
+    Object.entries(PARENT_TIMEFRAME).forEach(([childTf, parentTf]) => {
+      if (parentTf !== parentTimeframe) return;
+      const childBlock = document.querySelector(`.category-container[data-timeframe="${childTf}"] .goal-list[data-category="${category}"]`);
+      if (!childBlock) return;
+      const categoryBody = childBlock.closest('.category-body');
+      if (!categoryBody) return;
+
+      let funnelBox = categoryBody.querySelector('.funnel-context');
+      const parentGoals = load(goalsKey(parentTimeframe, category), []);
+
+      if (parentGoals.length === 0) {
+        if (funnelBox) funnelBox.remove();
+        return;
+      }
+
+      const parentItems = parentGoals.map(g => `<div class="funnel-item">${g.done ? '✓' : '○'} ${g.text}</div>`).join('');
+      const newHtml = `
+        <div class="funnel-label">In Service Of This ${TIMEFRAME_LABELS[parentTimeframe]} Goal</div>
+        ${parentItems}
+      `;
+
+      if (!funnelBox) {
+        funnelBox = document.createElement('div');
+        funnelBox.className = 'funnel-context';
+        categoryBody.insertBefore(funnelBox, categoryBody.firstChild);
+      }
+      funnelBox.innerHTML = newHtml;
+    });
+  }
+
   function attachAddHandlers() {
     document.querySelectorAll('[data-goal-add]').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -485,6 +559,7 @@
         input.value = '';
         renderGoals(timeframe, category);
         updateCategoryCount(timeframe, category);
+        refreshFunnelContext(timeframe, category);
       });
     });
 

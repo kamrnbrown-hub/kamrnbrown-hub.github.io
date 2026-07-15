@@ -77,6 +77,19 @@
     font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 1.5px; color: var(--gold-bright); text-transform: uppercase;
   }
 
+  .study-banner {
+    border: 1px solid var(--gold);
+    background: linear-gradient(160deg, rgba(184,155,108,0.08), rgba(184,155,108,0.02));
+    padding: 14px 18px; margin-bottom: 28px; text-align: center;
+  }
+  .study-banner-label {
+    font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold);
+  }
+  .study-banner-text {
+    font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--bone); margin-top: 6px;
+  }
+  .study-banner-text a { color: var(--gold-bright); }
+
   .cal-legend {
     display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
     margin-bottom: 18px; font-size: 11.5px; color: var(--bone-dim); font-family: 'Cormorant Garamond', serif;
@@ -213,6 +226,11 @@
     <div class="divider"></div>
   </header>
 
+  <div class="study-banner" id="studyBanner" style="display:none;">
+    <div class="study-banner-label">📖 What You Should Be Studying Now</div>
+    <div class="study-banner-text" id="studyBannerText">—</div>
+  </div>
+
   <div class="section-label">Your Month</div>
   <div class="section-sub">tap any day to see or add details</div>
 
@@ -236,11 +254,12 @@
     <div id="dayEventList"></div>
     <div class="add-event-row">
       <input type="text" id="newEventText" placeholder="e.g. Rent due, Date night, Dentist">
-      <select id="newEventType">
+      <select id="newEventType" onchange="toggleAmountField()">
         <option value="bill">Bill</option>
         <option value="social">Social</option>
         <option value="personal">Personal</option>
       </select>
+      <input type="number" id="newEventAmount" placeholder="$ amount" style="display:block;">
       <button onclick="addEventToDay()">+ Add</button>
     </div>
   </div>
@@ -316,6 +335,19 @@
     getAllWeekdaysOfMonth(year, month, 5).forEach(d => addRecurring(d, 'Date Night at the Met'));
     getAllWeekdaysOfMonth(year, month, 6).forEach(d => addRecurring(d, 'Date Night at the Met'));
     getAllWeekdaysOfMonth(year, month, 2).forEach(d => addRecurring(d, '$30-for-$30 Tickets Drop (NYC Ballet / Opera), 12pm'));
+
+    // recurring bills (shared with Personal Finance page)
+    const bills = load('kamrn_bills_list', []);
+    bills.forEach(bill => {
+      const dayNum = parseInt(bill.due);
+      if (isNaN(dayNum)) return;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      if (dayNum > daysInMonth) return;
+      const billDate = new Date(year, month, dayNum);
+      const key = dateKey(billDate);
+      if (!recurring[key]) recurring[key] = [];
+      recurring[key].push({ text: `${bill.name} — $${bill.amount}`, type: 'bill', recurring: true });
+    });
 
     return recurring;
   }
@@ -467,23 +499,95 @@
     });
   }
 
+  function toggleAmountField() {
+    const type = document.getElementById('newEventType').value;
+    const amountField = document.getElementById('newEventAmount');
+    amountField.style.display = (type === 'bill') ? 'block' : 'none';
+  }
+
+  // ---------- shared bills list (same storage Finance page reads from) ----------
+  function getSharedBillsList() {
+    return load('kamrn_bills_list', []);
+  }
+  function saveSharedBillsList(list) {
+    save('kamrn_bills_list', list);
+  }
+
+  function ordinal(n) {
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  function syncBillToFinance(text, amount, dateObj) {
+    if (!amount || isNaN(amount)) return; // only sync if a real dollar amount was given
+    const dueDay = ordinal(dateObj.getDate());
+    const bills = getSharedBillsList();
+
+    // avoid duplicate recurring bill entries with the same name
+    const existingIdx = bills.findIndex(b => b.name.toLowerCase() === text.toLowerCase());
+    if (existingIdx >= 0) {
+      bills[existingIdx].amount = parseFloat(amount);
+      bills[existingIdx].due = dueDay;
+    } else {
+      bills.push({ name: text, amount: parseFloat(amount), due: dueDay });
+    }
+    saveSharedBillsList(bills);
+  }
+
   function addEventToDay() {
     if (!selectedDateStr) return;
     const text = document.getElementById('newEventText').value.trim();
     const type = document.getElementById('newEventType').value;
+    const amount = document.getElementById('newEventAmount').value;
     if (!text) return;
 
     const allEvents = getAllEvents();
     if (!allEvents[selectedDateStr]) allEvents[selectedDateStr] = [];
-    allEvents[selectedDateStr].push({ text, type });
+    const eventObj = { text, type };
+    if (type === 'bill' && amount) eventObj.amount = parseFloat(amount);
+    allEvents[selectedDateStr].push(eventObj);
     saveAllEvents(allEvents);
 
+    // sync to Finance page as a recurring monthly bill
+    if (type === 'bill') {
+      const [y, m, d] = selectedDateStr.split('-').map(Number);
+      syncBillToFinance(text, amount, new Date(y, m - 1, d));
+    }
+
     document.getElementById('newEventText').value = '';
+    document.getElementById('newEventAmount').value = '';
     renderDayEvents();
     renderCalendar();
   }
 
   renderCalendar();
+  toggleAmountField();
+
+  // ---------- study banner: reads P&C schedule published by school.html ----------
+  function renderStudyBanner() {
+    const schedule = load('kamrn_pc_study_schedule', null);
+    if (!schedule || schedule.length === 0) return;
+
+    const today = new Date(new Date().toDateString());
+    const current = schedule.find(p => {
+      const start = new Date(p.startDate + 'T00:00:00');
+      const end = new Date(p.endDate + 'T00:00:00');
+      return today >= start && today <= end;
+    });
+
+    const banner = document.getElementById('studyBanner');
+    if (!current) {
+      banner.style.display = 'none';
+      return;
+    }
+
+    banner.style.display = 'block';
+    document.getElementById('studyBannerText').innerHTML =
+      `${current.icon} <b>${current.label}</b> — see full tasks on the <a href="school.html">School page</a>.`;
+  }
+
+  renderStudyBanner();
 
   // ---------- recurring events reference list (separate from bucket list) ----------
   const RECURRING_EVENTS_LIST = [

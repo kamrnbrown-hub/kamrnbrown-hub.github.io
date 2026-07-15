@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Higher Self — Kam'rn's Enigmas</title>
+<title>Daily Briefing — Kam'rn's Enigmas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -165,7 +165,7 @@
   <a class="back-link" href="index.html">← back to grimoire</a>
 
   <header>
-    <h1 class="sigil">Higher Self</h1>
+    <h1 class="sigil">Daily Briefing</h1>
     <div class="subtitle">everything you need to know, all in one place</div>
     <div class="divider"></div>
   </header>
@@ -200,6 +200,11 @@
     <div class="brief-card">
       <div class="brief-label"><span class="brief-icon">📅</span> On the Calendar This Week</div>
       <div id="calendarSection"></div>
+    </div>
+
+    <div class="brief-card">
+      <div class="brief-label"><span class="brief-icon">📖</span> What To Study Today</div>
+      <div id="studySection"></div>
     </div>
 
     <div class="brief-card">
@@ -418,6 +423,23 @@
         div.innerHTML = `<div class="brief-item-name">${ev.text}</div><div class="brief-item-meta">${dateStr}</div>`;
         calSection.appendChild(div);
       });
+    }
+
+    // what to study today (reads P&C schedule published by school.html)
+    const studySection = document.getElementById('studySection');
+    studySection.innerHTML = '';
+    const studySchedule = load('kamrn_pc_study_schedule', null);
+    const todayForStudy = new Date(new Date().toDateString());
+    const currentStudyPhase = studySchedule ? studySchedule.find(p => {
+      const start = new Date(p.startDate + 'T00:00:00');
+      const end = new Date(p.endDate + 'T00:00:00');
+      return todayForStudy >= start && todayForStudy <= end;
+    }) : null;
+
+    if (currentStudyPhase) {
+      studySection.innerHTML = `<div class="brief-item event">${currentStudyPhase.icon} <b>${currentStudyPhase.label}</b> — see full task list on the School page</div>`;
+    } else {
+      studySection.innerHTML = '<div class="empty-note">no active study phase right now — check the School page</div>';
     }
 
     // affirmation

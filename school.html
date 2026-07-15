@@ -756,6 +756,7 @@
   const PHASES = [
     {
       id: 'enroll', phase: 'Phase 0', label: 'Enroll & Set Up', dates: 'Jul 21 – Jul 25', icon: '📋',
+      startDate: '2026-07-21', endDate: '2026-07-25',
       tasks: [
         { day: 'Mon Jul 21', task: 'Enroll in Kaplan NY P&C pre-licensing course at kaplanfinancial.com/insurance/new-york (~$125). Use StateRequirement.com for 10% off code.', tag: 'ACTION' },
         { day: 'Mon Jul 21', task: 'Create free account at open-exam-prep.com/practice/ny-property-casualty — your free supplement for practice questions.', tag: 'ACTION' },
@@ -767,6 +768,7 @@
     },
     {
       id: 'module1', phase: 'Phase 1', label: 'Insurance Basics & Regulation', dates: 'Jul 28 – Aug 8', icon: '📖',
+      startDate: '2026-07-28', endDate: '2026-08-08',
       tasks: [
         { day: 'Week of Jul 28', task: 'Study: What is insurance, types of risk (pure vs speculative), insurable risk requirements, law of large numbers, adverse selection.', tag: 'STUDY' },
         { day: 'Week of Jul 28', task: 'Study: Key principles — indemnity, insurable interest, subrogation, contribution, proximate cause.', tag: 'STUDY' },
@@ -778,6 +780,7 @@
     },
     {
       id: 'module2', phase: 'Phase 2', label: 'Property Insurance', dates: 'Aug 10 – Aug 28', icon: '🏠',
+      startDate: '2026-08-10', endDate: '2026-08-28',
       tasks: [
         { day: 'Week of Aug 10', task: 'Study: Property basics — named vs open peril, vacancy vs unoccupancy, loss valuation (ACV vs Replacement Cost). MEMORIZE the ACV formula.', tag: 'STUDY' },
         { day: 'Week of Aug 10', task: 'Study: Coinsurance clause and the payment formula. Practice 3–5 coinsurance math problems.', tag: 'STUDY' },
@@ -790,6 +793,7 @@
     },
     {
       id: 'module3', phase: 'Phase 3', label: 'Auto Insurance & NY No-Fault', dates: 'Aug 31 – Sep 12', icon: '🚗',
+      startDate: '2026-08-31', endDate: '2026-09-12',
       tasks: [
         { day: 'Week of Aug 31', task: 'Study: Personal Auto Policy (PAP) — Parts A through D.', tag: 'STUDY' },
         { day: 'Week of Aug 31', task: 'MEMORIZE: NY minimum auto limits = 25/50/10 + $50,000 PIP.', tag: 'STUDY' },
@@ -801,6 +805,7 @@
     },
     {
       id: 'module4', phase: 'Phase 4', label: 'Casualty, Commercial & NY Laws', dates: 'Sep 14 – Oct 2', icon: '⚖️',
+      startDate: '2026-09-14', endDate: '2026-10-02',
       tasks: [
         { day: 'Week of Sep 14', task: 'Study: Casualty & liability basics — tort, negligence (4 elements), strict liability, occurrence vs claims-made.', tag: 'STUDY' },
         { day: 'Week of Sep 14', task: 'Study: Umbrella policy — coverage, underlying policy requirements, why high-net-worth NYC clients need it.', tag: 'STUDY' },
@@ -814,6 +819,7 @@
     },
     {
       id: 'review', phase: 'Phase 5', label: 'Full Review & Practice Exams', dates: 'Oct 5 – Oct 23', icon: '🔁',
+      startDate: '2026-10-05', endDate: '2026-10-23',
       tasks: [
         { day: 'Week of Oct 5', task: 'Take your FIRST full 150-question practice exam under timed conditions (2.5 hours).', tag: 'MILESTONE' },
         { day: 'Week of Oct 5', task: 'Review every wrong answer from Practice Exam 1. Understand WHY it\'s right.', tag: 'STUDY' },
@@ -827,6 +833,7 @@
     },
     {
       id: 'exam', phase: 'Phase 6', label: 'Exam Week', dates: 'Oct 27 – Oct 31', icon: '🎯',
+      startDate: '2026-10-27', endDate: '2026-10-31',
       tasks: [
         { day: 'Mon Oct 27', task: 'Light review only — 30 minutes max. No cramming.', tag: 'TIP' },
         { day: 'Tue Oct 28', task: 'Rest day. Cramming the night before hurts more than it helps.', tag: 'TIP' },
@@ -837,6 +844,7 @@
     },
     {
       id: 'retake', phase: 'Retake Path', label: 'If You Need to Retake', dates: 'Nov 1 – Nov 21 (if needed)', icon: '🔄',
+      startDate: '2026-11-01', endDate: '2026-11-21',
       tasks: [
         { day: 'Nov 1–2', task: 'Get your diagnostic report from PSI. Circle the 2–3 weakest sections.', tag: 'ACTION' },
         { day: 'Nov 3–14', task: '2 weeks of targeted re-study on ONLY your weak sections.', tag: 'STUDY' },
@@ -848,6 +856,7 @@
     },
     {
       id: 'licensed', phase: 'Phase 7', label: 'Licensed → Start Applying', dates: 'Nov (attempt 1) or Dec (attempt 2)', icon: '✅',
+      startDate: '2026-11-01', endDate: '2026-12-31',
       tasks: [
         { day: 'Day 1', task: 'Update LinkedIn: Add "NY Licensed Property & Casualty Insurance Producer."', tag: 'ACTION' },
         { day: 'Day 1–3', task: 'Apply to GNY Insurance Underwriter Trainee Program at gny.com/careers — TOP priority.', tag: 'ACTION' },
@@ -921,6 +930,19 @@
   }
 
   renderPhases();
+
+  // ---------- share study schedule with Calendar & Daily Briefing pages ----------
+  function publishStudySchedule() {
+    const shared = PHASES.map(p => ({
+      id: p.id,
+      label: p.label,
+      startDate: p.startDate,
+      endDate: p.endDate,
+      icon: p.icon
+    }));
+    localStorage.setItem('kamrn_pc_study_schedule', JSON.stringify(shared));
+  }
+  publishStudySchedule();
 
   // ================= P&C STUDY GUIDE REFERENCE =================
   const REF_SECTIONS = [
