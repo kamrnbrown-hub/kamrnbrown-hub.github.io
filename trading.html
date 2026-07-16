@@ -114,6 +114,65 @@
     font-size: 14px; border-radius: 2px;
   }
   .calc-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .calc-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media (max-width: 500px) {
+    .calc-grid-3 { grid-template-columns: 1fr; }
+  }
+
+  .grade-box {
+    margin-top: 16px; padding: 14px; text-align: center; border: 1px solid var(--line); border-radius: 4px;
+  }
+  .grade-box.excellent { border-color: var(--win-green, #7a9b76); background: rgba(122,155,118,0.1); }
+  .grade-box.okay { border-color: var(--gold); background: rgba(184,155,108,0.1); }
+  .grade-box.risky { border-color: var(--loss-red, #a85c5c); background: rgba(168,92,92,0.1); }
+  .grade-val { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 1px; }
+
+  /* ---------- ICC strategy tab ---------- */
+  .icc-section {
+    border: 1px solid var(--line); background: linear-gradient(160deg, var(--panel), var(--charcoal));
+    padding: 20px 22px; margin-bottom: 20px;
+  }
+  .icc-section-title {
+    font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold-bright); margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .icc-section-title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .icc-flow { display: flex; flex-direction: column; gap: 18px; }
+  .icc-step { display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: start; }
+  .icc-num {
+    width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--gold); color: var(--gold-bright);
+    font-family: 'Cinzel', serif; font-size: 14px; display: flex; align-items: center; justify-content: center;
+  }
+  .icc-step-title { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600; color: var(--gold-bright); }
+  .icc-step-body { font-family: 'Cormorant Garamond', serif; font-size: 14.5px; color: var(--bone); margin-top: 4px; line-height: 1.5; }
+  .icc-step-sub { font-family: 'Jost', sans-serif; font-size: 12.5px; color: var(--lilac); margin-top: 8px; line-height: 1.6; }
+  .icc-fail { color: var(--loss-red, #a85c5c); }
+
+  .icc-rule-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+  .icc-rule-card { border: 1px solid var(--line); background: var(--charcoal); padding: 12px; text-align: center; }
+  .icc-dir { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px; color: var(--gold); margin-bottom: 6px; }
+  .icc-rule-card p { font-family: 'Cormorant Garamond', serif; font-size: 13.5px; color: var(--bone); margin: 0; }
+
+  .icc-note { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12.5px; color: var(--bone-dim); }
+
+  .icc-rule-item { padding: 12px 0; border-bottom: 1px dotted var(--line); }
+  .icc-rule-item:last-child { border-bottom: none; }
+  .icc-rt { font-family: 'Cinzel', serif; font-size: 12.5px; letter-spacing: 0.5px; color: var(--gold-bright); }
+  .icc-rule-item p { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--bone); margin: 6px 0 0; line-height: 1.5; }
+  .icc-sub { font-family: 'Jost', sans-serif; font-size: 12px; color: var(--lilac); margin-top: 6px; font-style: italic; }
+
+  .icc-tip {
+    font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--bone); padding: 8px 0;
+    border-bottom: 1px dotted var(--line); line-height: 1.5;
+  }
+  .icc-tip:last-child { border-bottom: none; }
+  .icc-tip b { color: var(--lilac); }
+
+  .icc-gloss-item { padding: 10px 0; border-bottom: 1px dotted var(--line); }
+  .icc-gloss-item:last-child { border-bottom: none; }
+  .icc-gloss-term { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 0.5px; color: var(--gold-bright); }
+  .icc-gloss-def { font-family: 'Cormorant Garamond', serif; font-size: 13.5px; color: var(--bone); margin-top: 4px; line-height: 1.5; }
   .calc-results {
     margin-top: 20px; padding-top: 18px; border-top: 1px dashed var(--line);
     display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
@@ -277,8 +336,8 @@
   <div class="tab-bar">
     <button class="tab-btn active" data-tab="news">Market News</button>
     <button class="tab-btn" data-tab="checklist">Pre-Market</button>
-    <button class="tab-btn" data-tab="calculator">Risk Calc</button>
-    <button class="tab-btn" data-tab="log">Trade Log</button>
+    <button class="tab-btn" data-tab="icc">ICC Strategy</button>
+    <button class="tab-btn" data-tab="log">Trade Log & Risk</button>
     <button class="tab-btn" data-tab="pnl">P&L Calendar</button>
   </div>
 
@@ -310,59 +369,240 @@
     <button class="reset-btn" onclick="resetChecklist()">Reset Checklist</button>
   </div>
 
-  <!-- RISK CALCULATOR -->
-  <div class="tab-panel" id="tab-calculator">
-    <div class="section-label">Risk Management Calculator</div>
-    <div class="section-sub">position size, R:R, and dollar risk — before you enter</div>
+  <!-- ICC STRATEGY -->
+  <div class="tab-panel" id="tab-icc">
+    <div class="section-label">ICC Field Guide</div>
+    <div class="section-sub">Indication · Correction · Continuation</div>
 
-    <div class="calc-box">
-      <div class="calc-row">
-        <label>Account Balance ($)</label>
-        <input type="number" id="calcBalance" placeholder="e.g. 5000" step="0.01">
-      </div>
-      <div class="calc-row">
-        <label>Risk % Per Trade</label>
-        <input type="number" id="calcRiskPct" placeholder="e.g. 1" step="0.1">
-      </div>
-      <div class="calc-grid-2">
-        <div class="calc-row">
-          <label>Entry Price</label>
-          <input type="number" id="calcEntry" placeholder="0.00" step="0.0001">
+    <div class="icc-section">
+      <div class="icc-section-title">The Three Steps</div>
+      <div class="icc-flow">
+        <div class="icc-step">
+          <div class="icc-num">1</div>
+          <div>
+            <div class="icc-step-title">Indication</div>
+            <div class="icc-step-body">Liquidity Pool Penetration — price violently pierces the Previous Day's High or Low (RTH), and a 1-minute Fair Value Gap forms on that break.</div>
+            <div class="icc-step-sub"><b>Confirm with a Structural Body Close:</b> a candle closing with a solid, full body past the HOD/LOD line. Wicks don't count — a wick is just a sweep, not a break.</div>
+          </div>
         </div>
-        <div class="calc-row">
-          <label>Stop Loss Price</label>
-          <input type="number" id="calcStop" placeholder="0.00" step="0.0001">
+        <div class="icc-step">
+          <div class="icc-num">2</div>
+          <div>
+            <div class="icc-step-title">Correction</div>
+            <div class="icc-step-body">Price pulls back into that FVG. <span class="icc-fail">If price closes through the far side of the gap, it's invalidated — no trade, walk away.</span></div>
+          </div>
         </div>
-      </div>
-      <div class="calc-row">
-        <label>Target Price</label>
-        <input type="number" id="calcTarget" placeholder="0.00" step="0.0001">
+        <div class="icc-step">
+          <div class="icc-num">3</div>
+          <div>
+            <div class="icc-step-title">Continuation</div>
+            <div class="icc-step-body">Look for a <b>Displacement Candle</b> — one aggressive, full-bodied candle closing back out of the FVG in the Indication direction. This is your entry trigger, not just "price drifting that way."</div>
+            <div class="icc-step-sub">
+              <b>Check for:</b> body dominance (mostly body, not wick) and a close past the FVG's near edge.<br>
+              <b>Bonus confirmation:</b> a fresh, smaller FVG left behind by the displacement candle itself.<br>
+              <b>Invalidated if:</b> the very next candle closes back inside the FVG (a round trip) — that's a failed Continuation. No re-entry on the same FVG; wait for a fresh Indication or abandon the level for the session.
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="calc-results">
-        <div class="result-card">
-          <div class="result-label">$ At Risk</div>
-          <div class="result-value danger" id="resDollarRisk">—</div>
+      <div class="icc-rule-box">
+        <div class="icc-rule-card">
+          <div class="icc-dir">Long (above PDH)</div>
+          <p>Stop 3 ticks below the FVG bottom.</p>
         </div>
-        <div class="result-card">
-          <div class="result-label">Position Size</div>
-          <div class="result-value" id="resSize">—</div>
+        <div class="icc-rule-card">
+          <div class="icc-dir">Short (below PDL)</div>
+          <p>Stop 3 ticks above the FVG top.</p>
         </div>
-        <div class="result-card">
-          <div class="result-label">Risk : Reward</div>
-          <div class="result-value" id="resRR">—</div>
-        </div>
-        <div class="result-card">
-          <div class="result-label">$ Potential Reward</div>
-          <div class="result-value good" id="resReward">—</div>
-        </div>
+      </div>
+      <div class="icc-note" style="margin-top:10px;">Take profit: fixed 1:2 R while you're building your sample size. Graduate to nearest untaken liquidity once your journal shows which levels actually hold.</div>
+    </div>
+
+    <div class="icc-section">
+      <div class="icc-section-title">Non-Negotiable Rules</div>
+
+      <div class="icc-rule-item">
+        <div class="icc-rt">Max 3 Trades / Day</div>
+        <p>Win, lose, or scratch — once you've taken 3, you're done. No "just one more."</p>
+      </div>
+
+      <div class="icc-rule-item">
+        <div class="icc-rt">Max 2 Losses / Day = Stop</div>
+        <p>Two losses in a row is your circuit breaker. Close the platform.</p>
+        <div class="icc-sub">This is the rule that directly protects you from revenge trading — it removes your ability to "make it back" the same session.</div>
+      </div>
+
+      <div class="icc-rule-item">
+        <div class="icc-rt">Position Size Is Locked Before Entry</div>
+        <p>Set from the risk calculator — never adjusted after a loss. Next trade uses the same or smaller size, never bigger.</p>
+        <div class="icc-sub">The urge to size up after a loss is itself the signal to stop trading, not a signal to act on.</div>
+      </div>
+
+      <div class="icc-rule-item">
+        <div class="icc-rt">No Revenge Re-Entries</div>
+        <p>If Correction or Continuation invalidates, that level is dead for the session. No re-entry on the same FVG. No chasing the next candle after a stop-out.</p>
+      </div>
+
+      <div class="icc-rule-item">
+        <div class="icc-rt">10-Minute Cool-Off After Any Loss</div>
+        <p>Mandatory walk-away from the charts before you're allowed to look for the next setup. No exceptions.</p>
+      </div>
+
+      <div class="icc-rule-item">
+        <div class="icc-rt">Pre-Trade Gut Check</div>
+        <p>Before every entry, ask: <i>"Am I taking this because all 3 ICC steps confirmed, or because I want to be in a trade right now?"</i> If you can't honestly answer the first, don't take it.</p>
+      </div>
+    </div>
+
+    <div class="icc-section">
+      <div class="icc-section-title">Tips & Tricks</div>
+      <div class="icc-tip">Round contract size <b>down</b>, always — never up.</div>
+      <div class="icc-tip">Set your risk $ as a fixed % of account (0.5–1%), not a flat number, so it scales as your account moves.</div>
+      <div class="icc-tip">3-tick stop buffer is the starting default, not 2 — enough to survive normal noise without giving up the "clean" invalidation logic.</div>
+      <div class="icc-tip">Fixed R:R while you're early builds clean, comparable data. Let the journal — not a guess — tell you when to switch to liquidity-based targets.</div>
+      <div class="icc-tip">MNQ is your most fertile instrument for setup frequency. MES is the calmer backup on choppy days. M2K only during RTH — spreads widen outside it.</div>
+      <div class="icc-tip">Volatility is opportunity <i>and</i> decision pressure. The faster the instrument, the more your non-negotiables matter — not less.</div>
+    </div>
+
+    <div class="icc-section">
+      <div class="icc-section-title">Glossary</div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">Liquidity Pool</div>
+        <div class="icc-gloss-def">A cluster of resting stop-loss and breakout orders sitting above/below an obvious level (like PDH/PDL). Price gets drawn toward these pools because there's enough order flow there to fill large positions.</div>
+      </div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">Liquidity Pool Penetration</div>
+        <div class="icc-gloss-def">Price violently piercing the Previous Day's High or Low. This is what kicks off your Indication.</div>
+      </div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">Structural Body Close</div>
+        <div class="icc-gloss-def">A candle closing with a solid, full body past the HOD/LOD line. Wicks don't count — a wick is just a sweep (liquidity grab), not a structural break.</div>
+      </div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">Fair Value Gap (FVG)</div>
+        <div class="icc-gloss-def">A 3-candle imbalance footprint: a gap left behind when price moves so fast that candle 1's range and candle 3's range don't overlap, leaving a visible void. This void tends to act as a magnet — price often returns to "fill" it before continuing.</div>
+      </div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">Unmitigated</div>
+        <div class="icc-gloss-def">An FVG that hasn't been touched/filled yet by price. Once price trades back through it, it's "mitigated."</div>
+      </div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">Displacement Candle</div>
+        <div class="icc-gloss-def">One aggressive, full-bodied candle that closes forcefully out of local structure. This is your Continuation trigger.</div>
+      </div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">Invalidation</div>
+        <div class="icc-gloss-def">The price level where your trade thesis is proven wrong — price closing through the far side of the FVG (Correction fails) or a round-trip back into the FVG right after displacement (Continuation fails).</div>
+      </div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">Point of Control (POC)</div>
+        <div class="icc-gloss-def">The single price level with the most traded volume in a session — the "center of gravity" for that day.</div>
+      </div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">Value Area High / Low (VAH/VAL)</div>
+        <div class="icc-gloss-def">The upper and lower bounds of where roughly 70% of the previous day's volume traded. Your no-trade zone sits between these two.</div>
+      </div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">High-Volume Belly</div>
+        <div class="icc-gloss-def">The dense, thick part of a volume profile where a lot of trading happened. Price tends to chop here rather than trend — this is why it's a no-trade zone.</div>
+      </div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">Tick / Tick Value</div>
+        <div class="icc-gloss-def">The smallest price increment a contract can move, and the dollar amount that increment is worth. Varies by instrument (MNQ, MES, and M2K each have different tick values).</div>
+      </div>
+
+      <div class="icc-gloss-item">
+        <div class="icc-gloss-term">R:R (Risk:Reward)</div>
+        <div class="icc-gloss-def">The ratio between what you're risking (stop distance) and what you're targeting (reward distance). A 1:2 means you're risking $1 to make $2.</div>
       </div>
     </div>
   </div>
 
-  <!-- TRADE LOG -->
+  <!-- TRADE LOG & RISK CALCULATOR -->
   <div class="tab-panel" id="tab-log">
-    <div class="section-label">Trade Log</div>
+    <div class="section-label">Risk Calculator</div>
+    <div class="section-sub">futures-specific — tick values, daily max, contract sizing</div>
+
+    <div class="calc-box">
+      <div class="calc-grid-2">
+        <div class="calc-row">
+          <label>Instrument</label>
+          <select id="instrument" onchange="onInstrumentChange()">
+            <option value="0.50" selected>MNQ</option>
+            <option value="1.25">MES</option>
+            <option value="0.50">M2K</option>
+          </select>
+        </div>
+        <div class="calc-row">
+          <label>Tick value ($)</label>
+          <input type="number" id="tickValue" value="0.5" step="0.1" readonly>
+        </div>
+      </div>
+
+      <div class="calc-grid-2">
+        <div class="calc-row">
+          <label>Daily max loss ($)</label>
+          <input type="number" id="dailyMax" value="150" step="1">
+        </div>
+        <div class="result-card" style="align-self:end;">
+          <div class="result-value" id="outPerTrade">–</div>
+          <div class="result-label">Per Trade (÷3)</div>
+        </div>
+      </div>
+
+      <div class="calc-grid-3" style="margin-top:4px;">
+        <div class="calc-row">
+          <label>Risk $ this trade</label>
+          <input type="number" id="riskDollars" value="50" step="1">
+        </div>
+        <div class="calc-row">
+          <label>Stop distance (ticks)</label>
+          <input type="number" id="stopTicks" value="3" step="1">
+        </div>
+        <div class="calc-row">
+          <label>Target reward (ticks)</label>
+          <input type="number" id="targetTicks" value="6" step="1">
+        </div>
+      </div>
+
+      <div class="calc-results">
+        <div class="result-card">
+          <div class="result-value" id="outContracts">–</div>
+          <div class="result-label">Contracts</div>
+        </div>
+        <div class="result-card">
+          <div class="result-value" id="outActualRisk">–</div>
+          <div class="result-label">$ Actually Risked</div>
+        </div>
+        <div class="result-card">
+          <div class="result-value good" id="outReward">–</div>
+          <div class="result-label">$ Reward</div>
+        </div>
+        <div class="result-card">
+          <div class="result-value" id="outRR">–</div>
+          <div class="result-label">R : R</div>
+        </div>
+      </div>
+
+      <div class="grade-box" id="outGradeBox">
+        <div class="grade-val" id="outGrade">–</div>
+      </div>
+      <div class="icc-note" style="margin-top:14px; text-align:center;">Tick value auto-fills from the instrument dropdown. "Risk $ this trade" auto-fills from Daily Max ÷ 3, but you can override it if a specific trade needs less.</div>
+    </div>
+
+    <div class="section-label" style="margin-top:40px;">Trade Log</div>
     <div class="section-sub">full ICT-style journal for backtesting</div>
 
     <div class="log-form">
@@ -501,11 +741,15 @@
 
   // ---------- PRE-MARKET CHECKLIST ----------
   const CHECKLIST_ITEMS = [
+    'PDH/PDL marked from Regular Trading Hours only (9:30 AM–4:00 PM ET) — no pre/post-market wicks',
+    'Previous day Volume Profile marked — POC, VAH, VAL plotted',
+    'No-trade zone identified (inside VAH–VAL = chop, skip entries drawn from here)',
     'Checked economic calendar for red/orange news today',
     'Identified key levels (highs/lows, order blocks, FVGs)',
     'Marked liquidity pools above/below range',
     'Confirmed daily/weekly bias',
-    'Set risk % for the day — not exceeding plan',
+    'Set risk $ for the day before the first trade — decided now, not mid-trade',
+    'Confirmed daily limits are reset — 0 trades taken, 0 losses, full risk budget available',
     'No revenge trading mindset — reviewed yesterday calmly',
     'Waiting for A+ setup only, not forcing entries',
     'Journal ready to log this trade immediately after'
@@ -544,44 +788,70 @@
 
   renderChecklist();
 
-  // ---------- RISK CALCULATOR ----------
-  function calcRisk() {
-    const balance = parseFloat(document.getElementById('calcBalance').value);
-    const riskPct = parseFloat(document.getElementById('calcRiskPct').value);
-    const entry = parseFloat(document.getElementById('calcEntry').value);
-    const stop = parseFloat(document.getElementById('calcStop').value);
-    const target = parseFloat(document.getElementById('calcTarget').value);
+  // ---------- RISK CALCULATOR (futures-specific) ----------
+  function onInstrumentChange() {
+    const val = document.getElementById('instrument').value;
+    document.getElementById('tickValue').value = val;
+    calcRisk();
+  }
 
-    if (!balance || !riskPct || !entry || !stop) {
-      document.getElementById('resDollarRisk').textContent = '—';
-      document.getElementById('resSize').textContent = '—';
-      document.getElementById('resRR').textContent = '—';
-      document.getElementById('resReward').textContent = '—';
+  function onDailyMaxChange() {
+    const dailyMax = parseFloat(document.getElementById('dailyMax').value) || 0;
+    const perTrade = dailyMax / 3;
+    document.getElementById('outPerTrade').textContent = '$' + perTrade.toFixed(2);
+    document.getElementById('riskDollars').value = perTrade.toFixed(2);
+    calcRisk();
+  }
+
+  function calcRisk() {
+    const risk = parseFloat(document.getElementById('riskDollars').value) || 0;
+    const stopTicks = parseFloat(document.getElementById('stopTicks').value) || 0;
+    const tickVal = parseFloat(document.getElementById('tickValue').value) || 0;
+    const targetTicks = parseFloat(document.getElementById('targetTicks').value) || 0;
+
+    if (stopTicks <= 0 || tickVal <= 0) {
+      document.getElementById('outContracts').textContent = '–';
+      document.getElementById('outActualRisk').textContent = '–';
+      document.getElementById('outReward').textContent = '–';
+      document.getElementById('outRR').textContent = '–';
+      document.getElementById('outGradeBox').classList.remove('excellent', 'okay', 'risky');
+      document.getElementById('outGrade').textContent = '–';
       return;
     }
 
-    const dollarRisk = balance * (riskPct / 100);
-    const perUnitRisk = Math.abs(entry - stop);
-    const size = perUnitRisk > 0 ? (dollarRisk / perUnitRisk) : 0;
+    const perContractRisk = stopTicks * tickVal;
+    const contracts = Math.max(Math.floor(risk / perContractRisk), 0);
+    const actualRisk = contracts * perContractRisk;
+    const reward = contracts * targetTicks * tickVal;
+    const rr = stopTicks > 0 ? (targetTicks / stopTicks) : 0;
 
-    document.getElementById('resDollarRisk').textContent = '$' + dollarRisk.toFixed(2);
-    document.getElementById('resSize').textContent = size.toFixed(4) + ' units';
+    document.getElementById('outContracts').textContent = contracts;
+    document.getElementById('outActualRisk').textContent = '$' + actualRisk.toFixed(2);
+    document.getElementById('outReward').textContent = '$' + reward.toFixed(2);
+    document.getElementById('outRR').textContent = '1:' + rr.toFixed(1);
 
-    if (target && perUnitRisk > 0) {
-      const rewardDistance = Math.abs(target - entry);
-      const rrRatio = rewardDistance / perUnitRisk;
-      const dollarReward = size * rewardDistance;
-      document.getElementById('resRR').textContent = '1 : ' + rrRatio.toFixed(2);
-      document.getElementById('resReward').textContent = '$' + dollarReward.toFixed(2);
+    const gradeBox = document.getElementById('outGradeBox');
+    const gradeVal = document.getElementById('outGrade');
+    gradeBox.classList.remove('excellent', 'okay', 'risky');
+    if (rr >= 2) {
+      gradeBox.classList.add('excellent');
+      gradeVal.textContent = '🟢 Excellent Choice';
+    } else if (rr >= 1) {
+      gradeBox.classList.add('okay');
+      gradeVal.textContent = '🟡 Okay Choice';
     } else {
-      document.getElementById('resRR').textContent = '—';
-      document.getElementById('resReward').textContent = '—';
+      gradeBox.classList.add('risky');
+      gradeVal.textContent = '🔴 Too Risky - Do Not Take';
     }
   }
 
-  ['calcBalance','calcRiskPct','calcEntry','calcStop','calcTarget'].forEach(id => {
+  document.getElementById('instrument').addEventListener('change', onInstrumentChange);
+  document.getElementById('dailyMax').addEventListener('input', onDailyMaxChange);
+  ['riskDollars', 'stopTicks', 'targetTicks'].forEach(id => {
     document.getElementById(id).addEventListener('input', calcRisk);
   });
+
+  onDailyMaxChange();
 
   // ---------- TRADE LOG ----------
   let trades = load('kamrn_trades', []);
