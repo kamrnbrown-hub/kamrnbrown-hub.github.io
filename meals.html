@@ -286,12 +286,23 @@
     font-family: 'Cormorant Garamond', serif;
     font-size: 15px;
     color: var(--bone);
+    background: none;
+    border: none;
+    border-bottom: 1px dashed transparent;
+    width: 100%;
+    padding: 2px 0;
+    cursor: text;
+  }
+  .rotation-items:focus {
+    outline: none;
+    border-bottom: 1px dashed var(--gold);
   }
 
   .prep-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin-bottom: 10px;
   }
   .prep-item {
     border-left: 2px solid var(--gold);
@@ -300,6 +311,38 @@
     font-family: 'Cormorant Garamond', serif;
     font-size: 15px;
     color: var(--bone);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .prep-item-text {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--bone);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+  }
+  .prep-item-text:focus { outline: none; }
+  .prep-delete {
+    background: none; border: none; color: var(--bone-dim); cursor: pointer; font-size: 13px; flex-shrink: 0;
+  }
+
+  .cycle-rec-box {
+    border: 1px solid var(--gold);
+    background: linear-gradient(160deg, rgba(184,155,108,0.08), rgba(184,155,108,0.02));
+    padding: 18px 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    color: var(--bone);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .cycle-rec-box b { color: var(--gold-bright); }
+  .cycle-rec-phase {
+    font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px; display: block;
   }
 
   .section-label {
@@ -349,42 +392,25 @@
       <div class="dt-protein">🎯 135g protein a day, every day</div>
     </div>
 
-    <div class="section-label" style="margin-top:36px;">This Week's Rotation</div>
-    <div class="section-sub">your current go-tos</div>
+    <div class="section-label" style="margin-top:36px;">Cycle-Based Recommendations</div>
+    <div class="section-sub" id="cycleRecSub">foods to lean into, based on where you are today</div>
+    <div class="cycle-rec-box" id="cycleRecBox">—</div>
 
-    <div class="rotation-grid">
-      <div class="rotation-card">
-        <div class="rotation-label">☕ Tea / Juice / Beverages</div>
-        <div class="rotation-items">Lemon water · Tea blend</div>
-      </div>
-      <div class="rotation-card">
-        <div class="rotation-label">🥤 Shake</div>
-        <div class="rotation-items">Yellow mango, etc.</div>
-      </div>
-      <div class="rotation-card">
-        <div class="rotation-label">🍳 Breakfast</div>
-        <div class="rotation-items">Baked oats</div>
-      </div>
-      <div class="rotation-card">
-        <div class="rotation-label">🍽️ Lunch / Dinner</div>
-        <div class="rotation-items">Quinoa salad · Aloo pie · Pelau · Sweet potato tacos</div>
-      </div>
-      <div class="rotation-card">
-        <div class="rotation-label">🍿 Snacks</div>
-        <div class="rotation-items">DIY cereal</div>
-      </div>
-    </div>
+    <div class="section-label" style="margin-top:36px;">This Week's Rotation</div>
+    <div class="section-sub">your current go-tos — tap any line to edit</div>
+
+    <div class="rotation-grid" id="rotationGrid"></div>
 
     <div class="section-label" style="margin-top:36px;">Sunday Meal Prep</div>
     <div class="section-sub">get ahead for the week</div>
-    <div class="prep-list">
-      <div class="prep-item">🧅 Pickled onion</div>
-      <div class="prep-item">🧄 Garlic sauce</div>
-      <div class="prep-item">🍗 Season chicken <span class="vegan-swap">(swap: season jackfruit, tofu, or soy curls)</span></div>
+    <div class="prep-list" id="prepList"></div>
+    <div class="add-row" style="margin-bottom:30px;">
+      <input type="text" id="newPrepText" placeholder="e.g. Chop veggies, marinate tofu">
+      <button onclick="addPrepItem()">+ Add</button>
     </div>
 
     <div class="section-label" style="margin-top:36px;">Daily Grid</div>
-    <div class="section-sub">click a box to type directly, it saves automatically</div>
+    <div class="section-sub">auto-filled from your rotation above — click any box to edit</div>
     <div class="week-grid" id="weekGrid"></div>
   </div>
 
@@ -1193,6 +1219,137 @@
     btn.textContent = steps.classList.contains('collapsed') ? '+ show instructions' : '– hide instructions';
   }
 
+  // ---------- editable rotation ----------
+  const ROTATION_KEY = 'kamrn_meal_rotation';
+  const DEFAULT_ROTATION = [
+    { icon: '☕', label: 'Tea / Juice / Beverages', items: 'Lemon water · Tea blend' },
+    { icon: '🥤', label: 'Shake', items: 'Yellow mango, etc.' },
+    { icon: '🍳', label: 'Breakfast', items: 'Baked oats' },
+    { icon: '🍽️', label: 'Lunch / Dinner', items: 'Quinoa salad · Aloo pie · Pelau · Sweet potato tacos' },
+    { icon: '🍿', label: 'Snacks', items: 'DIY cereal' }
+  ];
+
+  function loadRotation() {
+    try {
+      const raw = localStorage.getItem(ROTATION_KEY);
+      return raw ? JSON.parse(raw) : DEFAULT_ROTATION;
+    } catch(e) { return DEFAULT_ROTATION; }
+  }
+  function saveRotation(data) { localStorage.setItem(ROTATION_KEY, JSON.stringify(data)); }
+  let rotationData = loadRotation();
+
+  function renderRotation() {
+    const grid = document.getElementById('rotationGrid');
+    grid.innerHTML = '';
+    rotationData.forEach((r, idx) => {
+      const card = document.createElement('div');
+      card.className = 'rotation-card';
+      card.innerHTML = `
+        <div class="rotation-label">${r.icon} ${r.label}</div>
+        <input type="text" class="rotation-items" value="${r.items.replace(/"/g, '&quot;')}" data-idx="${idx}">
+      `;
+      const input = card.querySelector('.rotation-items');
+      input.addEventListener('input', () => {
+        rotationData[idx].items = input.value;
+        saveRotation(rotationData);
+        buildWeekGrid(); // keep daily grid auto-fill in sync
+      });
+      grid.appendChild(card);
+    });
+  }
+
+  // ---------- editable Sunday prep list ----------
+  const PREP_KEY = 'kamrn_sunday_prep';
+  const DEFAULT_PREP = [
+    { icon: '🧅', text: 'Pickled onion' },
+    { icon: '🧄', text: 'Garlic sauce' },
+    { icon: '🍗', text: 'Season chicken (swap: season jackfruit, tofu, or soy curls)' }
+  ];
+
+  function loadPrep() {
+    try {
+      const raw = localStorage.getItem(PREP_KEY);
+      return raw ? JSON.parse(raw) : DEFAULT_PREP;
+    } catch(e) { return DEFAULT_PREP; }
+  }
+  function savePrep(data) { localStorage.setItem(PREP_KEY, JSON.stringify(data)); }
+  let prepData = loadPrep();
+
+  function renderPrepList() {
+    const list = document.getElementById('prepList');
+    list.innerHTML = '';
+    prepData.forEach((p, idx) => {
+      const item = document.createElement('div');
+      item.className = 'prep-item';
+      item.innerHTML = `
+        <span>${p.icon}</span>
+        <input type="text" class="prep-item-text" value="${p.text.replace(/"/g, '&quot;')}" data-idx="${idx}">
+        <button class="prep-delete" data-idx="${idx}">×</button>
+      `;
+      const input = item.querySelector('.prep-item-text');
+      input.addEventListener('input', () => {
+        prepData[idx].text = input.value;
+        savePrep(prepData);
+      });
+      item.querySelector('.prep-delete').addEventListener('click', () => {
+        prepData.splice(idx, 1);
+        savePrep(prepData);
+        renderPrepList();
+      });
+      list.appendChild(item);
+    });
+  }
+
+  function addPrepItem() {
+    const input = document.getElementById('newPrepText');
+    const text = input.value.trim();
+    if (!text) return;
+    prepData.push({ icon: '📝', text });
+    savePrep(prepData);
+    input.value = '';
+    renderPrepList();
+  }
+
+  // ---------- cycle-based food recommendations ----------
+  const CYCLE_LENGTH_MEALS = 30;
+
+  function getCyclePhaseForMeals() {
+    const saved = localStorage.getItem('kamrn_cycle_start');
+    if (!saved) return null;
+    const startDate = new Date(saved + 'T00:00:00');
+    const today = new Date(new Date().toDateString());
+    const diffDays = Math.floor((today - startDate) / 86400000);
+    const day = ((diffDays % CYCLE_LENGTH_MEALS) + CYCLE_LENGTH_MEALS) % CYCLE_LENGTH_MEALS + 1;
+
+    if (day >= 14 && day <= 16) return { key: 'ovulation', name: 'Ovulation', day };
+    if (day >= 1 && day <= 5) return { key: 'period', name: 'Period', day };
+    if (day >= 6 && day <= 13) return { key: 'follicular', name: 'Follicular', day };
+    return { key: 'luteal', name: 'Luteal', day };
+  }
+
+  const CYCLE_FOOD_RECS = {
+    period: "Lean into <b>iron-rich foods</b> (lentils, leafy greens, dark chocolate), warm cooked meals, and <b>magnesium</b> for cramping (pumpkin seeds, dark chocolate). Avoid excess caffeine and very cold foods — your body wants warmth and grounding right now.",
+    follicular: "Lean into <b>light, fresh, sprouted foods</b> — salads, fermented foods (kimchi, sauerkraut) for gut health, and lean protein. Your digestion is efficient right now, so this is a great window to experiment with new recipes.",
+    ovulation: "Lean into <b>raw, colorful, fiber-rich foods</b> — fresh fruit, big salads, cruciferous veggies. Fiber helps clear the estrogen surge from your system efficiently. Light, energizing meals suit your peak-energy phase.",
+    luteal: "Lean into <b>grounding, magnesium-rich foods</b> (dark chocolate, pumpkin seeds, leafy greens) and complex carbs to steady blood sugar and mood. Reduce caffeine and sugar late in this phase to ease PMS-adjacent symptoms."
+  };
+
+  function renderCycleRecommendations() {
+    const box = document.getElementById('cycleRecBox');
+    const phase = getCyclePhaseForMeals();
+
+    if (!phase) {
+      box.innerHTML = "Set your period start date on the <a href='hormones.html' style='color:var(--gold-bright)'>Hormone Balance</a> page to unlock food recommendations matched to your cycle.";
+      return;
+    }
+
+    box.innerHTML = `<span class="cycle-rec-phase">${phase.name} — Day ${phase.day}</span>${CYCLE_FOOD_RECS[phase.key]}`;
+  }
+
+  renderRotation();
+  renderPrepList();
+  renderCycleRecommendations();
+
   const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const MEALS = ['Breakfast','Lunch','Dinner'];
   const STORAGE_KEY = 'kamrn_weekly_meals';
@@ -1206,6 +1363,13 @@
   function saveWeek(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
   const weekData = loadWeek();
 
+  // maps grid meal columns to rotation entries for auto-fill
+  function getRotationDefaultFor(meal) {
+    const map = { 'Breakfast': 'Breakfast', 'Lunch': 'Lunch / Dinner', 'Dinner': 'Lunch / Dinner' };
+    const entry = rotationData.find(r => r.label === map[meal]);
+    return entry ? entry.items : '';
+  }
+
   function buildWeekGrid() {
     const grid = document.getElementById('weekGrid');
     grid.innerHTML = '';
@@ -1218,7 +1382,9 @@
         const cell = document.createElement('div');
         cell.className = 'week-cell';
         const textarea = document.createElement('textarea');
-        textarea.value = weekData[key] || '';
+        // use manually-typed value if present, otherwise auto-fill from rotation
+        const manualValue = weekData[key];
+        textarea.value = (manualValue !== undefined && manualValue !== '') ? manualValue : getRotationDefaultFor(meal);
         textarea.placeholder = '—';
         textarea.addEventListener('input', () => {
           weekData[key] = textarea.value;

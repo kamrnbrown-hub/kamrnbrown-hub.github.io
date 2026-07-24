@@ -211,6 +211,68 @@
   .pc-subpanel { display: none; }
   .pc-subpanel.active { display: block; }
 
+  /* term plan cards */
+  .term-card {
+    border: 1px solid var(--line); background: linear-gradient(160deg, var(--panel), var(--charcoal));
+    margin-bottom: 12px;
+  }
+  .term-card-header {
+    display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; cursor: pointer;
+  }
+  .term-card-header-left { display: flex; align-items: center; gap: 10px; }
+  .term-card-name { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 1px; color: var(--gold-bright); }
+  .term-card-dates { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12px; color: var(--bone-dim); margin-top: 2px; }
+  .term-card-cus { font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold); text-transform: uppercase; margin-top: 2px; }
+  .term-chevron { color: var(--gold); transition: transform 0.25s ease; }
+  .term-card.collapsed .term-chevron { transform: rotate(-90deg); }
+  .term-card-body { padding: 0 16px 16px; }
+  .term-card.collapsed .term-card-body { display: none; }
+
+  .term-dates-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .term-dates-row input {
+    background: var(--charcoal); border: 1px solid var(--line); color: var(--bone);
+    padding: 8px 10px; font-family: 'Jost', sans-serif; font-size: 12.5px; border-radius: 2px; flex: 1; min-width: 120px;
+  }
+
+  .class-item {
+    border: 1px solid var(--line); background: var(--charcoal); padding: 12px 14px; margin-bottom: 8px;
+  }
+  .class-item-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .class-item-row:last-child { margin-bottom: 0; }
+  .class-item input, .class-item select {
+    background: var(--panel); border: 1px solid var(--line); color: var(--bone);
+    padding: 7px 9px; font-family: 'Jost', sans-serif; font-size: 12.5px; border-radius: 2px;
+  }
+  .class-code-input { flex: 0 0 70px; }
+  .class-name-input { flex: 1; min-width: 140px; }
+  .class-cu-input { flex: 0 0 60px; }
+  .class-status-select { flex: 1; min-width: 110px; }
+  .class-delete-btn {
+    background: none; border: 1px solid var(--line); color: var(--bone-dim);
+    width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 13px; flex-shrink: 0;
+  }
+  .class-delete-btn:hover { border-color: var(--burgundy-bright); color: var(--burgundy-bright); }
+
+  .status-badge {
+    font-family: 'Cinzel', serif; font-size: 8.5px; letter-spacing: 0.5px; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 10px; border: 1px solid var(--line); white-space: nowrap;
+  }
+  .status-badge.not-started { color: var(--bone-dim); }
+  .status-badge.in-progress { color: var(--gold-bright); border-color: var(--gold); }
+  .status-badge.complete { color: var(--win-green, #7a9b76); border-color: var(--win-green, #7a9b76); }
+
+  .term-add-row { display: flex; gap: 8px; margin-top: 4px; }
+  .term-add-row button {
+    background: none; border: 1px solid var(--gold); color: var(--gold-bright);
+    padding: 8px 16px; font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 1px; cursor: pointer; white-space: nowrap;
+  }
+  .term-add-row button:hover { background: rgba(184,155,108,0.1); }
+
+  .term-empty-note {
+    text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic;
+    color: var(--bone-dim); font-size: 13px; padding: 10px 0;
+  }
+
   /* timeline phases */
   .phase-card {
     border: 1px solid var(--line); background: linear-gradient(160deg, var(--panel), var(--charcoal));
@@ -334,6 +396,11 @@
     </div>
 
     <div id="goalList"></div>
+
+    <div class="section-label" style="margin-top:40px;">My Term Plan</div>
+    <div class="section-sub">all 7 terms — customize the classes you're taking each one</div>
+
+    <div id="termPlanContainer"></div>
   </div>
 
   <!-- GRADUATION TRACKER TAB -->
@@ -404,20 +471,7 @@
       </div>
     </div>
 
-    <div class="section-label" style="margin-top:40px;">Term Plan</div>
-    <div class="section-sub">your enrolled path to graduation</div>
-
-    <table class="term-table">
-      <tr><th>Term</th><th>Dates</th><th>CUs</th><th>Status</th></tr>
-      <tr><td>TCU (Transfer)</td><td>—</td><td>31</td><td class="term-good">● Complete</td></tr>
-      <tr><td>Term 1 (Current)</td><td>Jun 2026 – Nov 2026</td><td>12</td><td class="term-good">● Good</td></tr>
-      <tr><td>Term 2</td><td>Dec 2026 – May 2027</td><td>12</td><td class="term-good">● Good</td></tr>
-      <tr><td>Term 3</td><td>Jun 2027 – Nov 2027</td><td>12</td><td class="term-good">● Good</td></tr>
-      <tr><td>Term 4</td><td>Dec 2027 – May 2028</td><td>12</td><td class="term-good">● Good</td></tr>
-      <tr><td>Term 5</td><td>Jun 2028 – Nov 2028</td><td>12</td><td class="term-good">● Good</td></tr>
-      <tr><td>Term 6</td><td>Dec 2028 – May 2029</td><td>12</td><td class="term-good">● Good</td></tr>
-      <tr><td>Term 7</td><td>Jun 2029</td><td>7</td><td class="term-good">● Good</td></tr>
-    </table>
+    <div class="section-sub" style="margin-top:40px;">See the full class-by-class breakdown on the <a href="#" onclick="document.querySelector('[data-tab=wgu]').click(); return false;" style="color:var(--gold-bright);">WGU tab</a>, under My Term Plan.</div>
   </div>
 
   <!-- P&C UNDERWRITING TAB -->
@@ -696,7 +750,164 @@
   renderAssignments();
   renderGoals();
 
-  // ================= GRADUATION TRACKER =================
+  // ================= MY TERM PLAN =================
+  const TERM_PLAN_KEY = 'kamrn_term_plan';
+  const TERM_COLLAPSE_KEY = 'kamrn_term_collapsed_';
+
+  const DEFAULT_TERMS = [
+    { id: 'term1', name: 'Term 1', startDate: '2026-06-01', endDate: '2026-11-30', classes: [] },
+    { id: 'term2', name: 'Term 2', startDate: '2026-12-01', endDate: '2027-05-31', classes: [] },
+    { id: 'term3', name: 'Term 3', startDate: '2027-06-01', endDate: '2027-11-30', classes: [] },
+    { id: 'term4', name: 'Term 4', startDate: '2027-12-01', endDate: '2028-05-31', classes: [] },
+    { id: 'term5', name: 'Term 5', startDate: '2028-06-01', endDate: '2028-11-30', classes: [] },
+    { id: 'term6', name: 'Term 6', startDate: '2028-12-01', endDate: '2029-05-31', classes: [] },
+    { id: 'term7', name: 'Term 7', startDate: '2029-06-01', endDate: '2029-08-31', classes: [] }
+  ];
+
+  function loadTermPlan() {
+    return load(TERM_PLAN_KEY, DEFAULT_TERMS);
+  }
+  function saveTermPlan(terms) {
+    save(TERM_PLAN_KEY, terms);
+  }
+  let termPlanData = loadTermPlan();
+
+  function formatTermDates(startDate, endDate) {
+    if (!startDate || !endDate) return 'dates not set';
+    const opts = { month: 'short', year: 'numeric' };
+    const start = new Date(startDate + 'T00:00:00').toLocaleDateString('en-US', opts);
+    const end = new Date(endDate + 'T00:00:00').toLocaleDateString('en-US', opts);
+    return start + ' – ' + end;
+  }
+
+  function statusClass(status) {
+    if (status === 'Complete') return 'complete';
+    if (status === 'In Progress') return 'in-progress';
+    return 'not-started';
+  }
+
+  function renderTermPlan() {
+    const container = document.getElementById('termPlanContainer');
+    container.innerHTML = '';
+
+    termPlanData.forEach((term, termIdx) => {
+      const collapsed = load(TERM_COLLAPSE_KEY + term.id, true);
+      const totalCUs = term.classes.reduce((sum, c) => sum + (parseFloat(c.cus) || 0), 0);
+      const completeCount = term.classes.filter(c => c.status === 'Complete').length;
+
+      const card = document.createElement('div');
+      card.className = 'term-card' + (collapsed ? ' collapsed' : '');
+      card.innerHTML = `
+        <div class="term-card-header">
+          <div class="term-card-header-left">
+            <div>
+              <div class="term-card-name">${term.name}</div>
+              <div class="term-card-dates">${formatTermDates(term.startDate, term.endDate)}</div>
+              <div class="term-card-cus">${totalCUs} CUs · ${completeCount}/${term.classes.length} complete</div>
+            </div>
+          </div>
+          <div class="term-chevron">▾</div>
+        </div>
+        <div class="term-card-body">
+          <div class="term-dates-row">
+            <input type="date" class="term-start-input" value="${term.startDate || ''}" data-idx="${termIdx}">
+            <input type="date" class="term-end-input" value="${term.endDate || ''}" data-idx="${termIdx}">
+          </div>
+          <div class="class-list" data-idx="${termIdx}"></div>
+          <div class="term-add-row">
+            <button class="add-class-btn" data-idx="${termIdx}">+ Add Class</button>
+          </div>
+        </div>
+      `;
+
+      card.querySelector('.term-card-header').addEventListener('click', () => {
+        card.classList.toggle('collapsed');
+        save(TERM_COLLAPSE_KEY + term.id, card.classList.contains('collapsed'));
+      });
+
+      card.querySelector('.term-start-input').addEventListener('change', (e) => {
+        term.startDate = e.target.value;
+        saveTermPlan(termPlanData);
+        renderTermPlan();
+      });
+      card.querySelector('.term-end-input').addEventListener('change', (e) => {
+        term.endDate = e.target.value;
+        saveTermPlan(termPlanData);
+        renderTermPlan();
+      });
+
+      card.querySelector('.add-class-btn').addEventListener('click', () => {
+        term.classes.push({ code: '', name: '', cus: '', status: 'Not Started' });
+        saveTermPlan(termPlanData);
+        renderTermPlan();
+      });
+
+      container.appendChild(card);
+      renderClassList(term, termIdx);
+    });
+  }
+
+  function renderClassList(term, termIdx) {
+    const listEl = document.querySelector(`.class-list[data-idx="${termIdx}"]`);
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    if (term.classes.length === 0) {
+      listEl.innerHTML = '<div class="term-empty-note">no classes added yet</div>';
+      return;
+    }
+
+    term.classes.forEach((cls, classIdx) => {
+      const item = document.createElement('div');
+      item.className = 'class-item';
+      item.innerHTML = `
+        <div class="class-item-row">
+          <input type="text" class="class-code-input" placeholder="Code" value="${(cls.code || '').replace(/"/g, '&quot;')}">
+          <input type="text" class="class-name-input" placeholder="Class name" value="${(cls.name || '').replace(/"/g, '&quot;')}">
+          <input type="number" class="class-cu-input" placeholder="CUs" value="${cls.cus || ''}">
+          <button class="class-delete-btn">×</button>
+        </div>
+        <div class="class-item-row">
+          <select class="class-status-select">
+            <option value="Not Started" ${cls.status === 'Not Started' ? 'selected' : ''}>Not Started</option>
+            <option value="In Progress" ${cls.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+            <option value="Complete" ${cls.status === 'Complete' ? 'selected' : ''}>Complete</option>
+          </select>
+          <span class="status-badge ${statusClass(cls.status)}">${cls.status}</span>
+        </div>
+      `;
+
+      item.querySelector('.class-code-input').addEventListener('input', (e) => {
+        cls.code = e.target.value;
+        saveTermPlan(termPlanData);
+      });
+      item.querySelector('.class-name-input').addEventListener('input', (e) => {
+        cls.name = e.target.value;
+        saveTermPlan(termPlanData);
+      });
+      item.querySelector('.class-cu-input').addEventListener('input', (e) => {
+        cls.cus = e.target.value;
+        saveTermPlan(termPlanData);
+        renderTermPlan(); // refresh CU total in header
+      });
+      item.querySelector('.class-status-select').addEventListener('change', (e) => {
+        cls.status = e.target.value;
+        saveTermPlan(termPlanData);
+        renderTermPlan(); // refresh badge + complete count
+      });
+      item.querySelector('.class-delete-btn').addEventListener('click', () => {
+        term.classes.splice(classIdx, 1);
+        saveTermPlan(termPlanData);
+        renderTermPlan();
+      });
+
+      listEl.appendChild(item);
+    });
+  }
+
+  renderTermPlan();
+
+
   const DEFAULT_GRAD_INFO = {
     degreeName: 'Bachelor of Science, Business Management',
     schoolName: 'Western Governors University',
